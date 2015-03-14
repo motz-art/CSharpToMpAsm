@@ -13,7 +13,11 @@ namespace Demo
         [Address(0)]
         private void Start()
         {
+            begin: 
+            
             DoWork();
+            
+            goto begin;
         }
 
         protected abstract void DoWork();

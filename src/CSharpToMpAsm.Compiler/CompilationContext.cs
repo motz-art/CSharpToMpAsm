@@ -273,15 +273,10 @@ namespace CSharpToMpAsm.Compiler
 
                 method.Body.WriteMpAsm(writer, memManager);
 
-                
-                if (method.CodeAddress == -1)
-                {
-                    writer.Return();
-                }
-                else
-                {
-                    writer.GoTo(method.Label);
-                }
+                writer.Return();
+
+                writer.Comment("; End of method {0}.", method.Name);
+
                 writer.Comment("");
             }
             return stringWriter.ToString();

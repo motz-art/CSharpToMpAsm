@@ -45,5 +45,18 @@ namespace CSharpToMpAsm.Compiler
             //todo: use args type information to resolve method.
             return _definition.ResolveMethod(identifier);
         }
+
+        private readonly Dictionary<string, LabelCode> _labels = new Dictionary<string, LabelCode>();
+
+        public LabelCode ResolveLabel(string labelName)
+        {
+            LabelCode result;
+            if (!_labels.TryGetValue(labelName, out result))
+            {
+                result = new LabelCode(labelName);
+                _labels.Add(labelName, result);
+            }
+            return result;
+        }
     }
 }

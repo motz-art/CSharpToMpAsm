@@ -392,7 +392,8 @@ namespace CSharpToMpAsm.Compiler
 
         public ICode VisitGotoStatement(GotoStatement gotoStatement, BodyContext data)
         {
-            throw new NotImplementedException();
+            var label = data.ResolveLabel(gotoStatement.Label);
+            return new GotoCode(label);
         }
 
         public ICode VisitIfElseStatement(IfElseStatement ifElseStatement, BodyContext data)
@@ -402,7 +403,7 @@ namespace CSharpToMpAsm.Compiler
 
         public ICode VisitLabelStatement(LabelStatement labelStatement, BodyContext data)
         {
-            throw new NotImplementedException();
+            return new LabelCode(labelStatement.Label);
         }
 
         public ICode VisitLockStatement(LockStatement lockStatement, BodyContext data)

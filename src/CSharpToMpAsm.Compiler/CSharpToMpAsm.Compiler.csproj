@@ -80,9 +80,11 @@
     <Compile Include="Codes\GetValue.cs" />
     <Compile Include="Codes\ICode.cs" />
     <Compile Include="Codes\IntValue.cs" />
+    <Compile Include="Codes\LabelCode.cs" />
     <Compile Include="Codes\NullCode.cs" />
     <Compile Include="Codes\ResultLocation.cs" />
     <Compile Include="CompilationContext.cs" />
+    <Compile Include="Codes\GotoCode.cs" />
     <Compile Include="ILabel.cs" />
     <Compile Include="IMemoryManager.cs" />
     <Compile Include="IMpAsmWriter.cs" />
