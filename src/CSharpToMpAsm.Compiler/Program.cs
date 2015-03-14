@@ -14,6 +14,7 @@ namespace CSharpToMpAsm.Compiler
             if (args.Length != 2)
             {
                 Console.WriteLine("Specify project folder and entry class to compile.");
+                return;
             }
             var projectDirectory = new DirectoryInfo(args[0]);
             
