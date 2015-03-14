@@ -18,11 +18,6 @@ namespace CSharpToMpAsm.Compiler.Codes
         public ResultLocation Location { get; set; }
         public ILabel _label;
 
-        public string GetMpAsm(CompilationContext compilationContext)
-        {
-            return string.Empty;
-        }
-
         public void WriteMpAsm(IMpAsmWriter writer, IMemoryManager memManager)
         {
             _label = GetLabel(writer);

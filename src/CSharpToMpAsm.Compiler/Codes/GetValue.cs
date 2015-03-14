@@ -21,11 +21,6 @@ namespace CSharpToMpAsm.Compiler.Codes
             get { return Variable.Location; }
         }
 
-        public string GetMpAsm(CompilationContext compilationContext)
-        {
-            return string.Format("; {0} ({1})", Variable.Location, Variable.Name);
-        }
-
         public void WriteMpAsm(IMpAsmWriter writer, IMemoryManager memManager)
         {
             writer.Comment(string.Format("; {0} ({1})", Variable.Location, Variable.Name));

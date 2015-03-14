@@ -23,12 +23,7 @@ namespace CSharpToMpAsm.Compiler.Codes
         {
             _label = label;
         }
-
-        public string GetMpAsm(CompilationContext compilationContext)
-        {
-            return string.Empty;
-        }
-
+        
         public void WriteMpAsm(IMpAsmWriter writer, IMemoryManager memManager)
         {
             writer.GoTo(_label.GetLabel(writer));

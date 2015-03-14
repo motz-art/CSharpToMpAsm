@@ -30,32 +30,6 @@ namespace CSharpToMpAsm.Compiler.Codes
             }
         }
 
-        public string GetMpAsm(CompilationContext compilationContext)
-        {
-            if (_address == null)
-            {
-                if (_staticAddress == null)
-                {
-                    _staticAddress = compilationContext.MemAllocate(ResultType.Size);
-                }
-                _address = _staticAddress;
-            }
-            var sb = new StringBuilder();
-
-            var bytes = BitConverter.GetBytes(_data);
-
-            sb.AppendLine(string.Format("; IntLiteral {0}(0x{0:X8}) to 0x{1:X2}.", _data, _address));
-
-            for (int i = 0; i < bytes.Length; i++)
-            {
-                var b = bytes[i];
-                sb.AppendLine(string.Format("\tMOVLW 0x{0:X2}", b));
-                sb.AppendLine(string.Format("\tMOVWF 0x{0:X2}", _address.Address + i));
-            }
-
-            return sb.ToString();
-        }
-
         public void WriteMpAsm(IMpAsmWriter writer, IMemoryManager memManager)
         {
             if (_address == null)

@@ -31,26 +31,6 @@ namespace CSharpToMpAsm.Compiler.Codes
             }
         }
 
-        public string GetMpAsm(CompilationContext compilationContext)
-        {
-            if (_address == null)
-            {
-                if (_staticAddress == null)
-                {
-                    _staticAddress = compilationContext.MemAllocate(ResultType.Size);
-                }
-                _address = _staticAddress;
-            }
-            var sb = new StringBuilder();
-            
-            sb.AppendLine(_left.GetMpAsm(compilationContext));
-            sb.AppendLine(_right.GetMpAsm(compilationContext));
-
-            sb.AppendLine("\tADD A, B");
-
-            return sb.ToString();
-        }
-
         public void WriteMpAsm(IMpAsmWriter writer, IMemoryManager memManager)
         {
             if (_address == null)

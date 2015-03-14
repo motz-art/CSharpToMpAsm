@@ -42,18 +42,6 @@ namespace CSharpToMpAsm.Compiler.Codes
             }
         }
 
-        public string GetMpAsm(CompilationContext compilationContext)
-        {
-            var sb = new StringBuilder();
-            sb.AppendLine(_code.GetMpAsm(compilationContext));
-            if (!_code.Location.IsWorkRegister)
-            {
-                sb.AppendLine(string.Format("; Cast to {0} type.", ResultType));
-                sb.AppendLine(string.Format("\tMOVF 0x{0:X2}, w", _code.Location.Address));
-            }
-            return sb.ToString();
-        }
-
         public void WriteMpAsm(IMpAsmWriter writer, IMemoryManager memManager)
         {
             _code.WriteMpAsm(writer, memManager);

@@ -22,16 +22,6 @@ namespace CSharpToMpAsm.Compiler.Codes
             get { throw new InvalidOperationException("BlobkCode has Void result type."); }
         }
 
-        public string GetMpAsm(CompilationContext compilationContext)
-        {
-            var sb = new StringBuilder();
-            foreach (var code in _codes)
-            {
-                sb.AppendLine(code.GetMpAsm(compilationContext));
-            }
-            return sb.ToString();
-        }
-
         public void WriteMpAsm(IMpAsmWriter writer, IMemoryManager memManager)
         {
             foreach (var code in _codes)
