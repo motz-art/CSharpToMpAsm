@@ -1,15 +1,48 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
+using ICSharpCode.NRefactory.CSharp;
 
 namespace CSharpToMpAsm.Compiler
 {
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
+            if (args.Length != 2)
+            {
+                Console.WriteLine("Specify project folder and entry class to compile.");
+            }
+            var projectDirectory = new DirectoryInfo(args[0]);
+            
+            var files = projectDirectory.GetFiles("*.cs");
+
+            var parser = new CSharpParser();
+
+            var parseResults = files.Select(x => parser.Parse(File.OpenText(x.FullName), x.Name)).ToArray();
+
+            var compilationContext = Compile(parseResults);
+            var entry = compilationContext.FindEntry();
+
+            Console.WriteLine("Entry is {0}.", entry.Name);
+
+            var output = projectDirectory.CreateSubdirectory("CSharpToMpAsm.Compiler");
+            var path = Path.ChangeExtension(Path.Combine(output.FullName, entry.Name), "asm");
+            
+            var code = compilationContext.CompileEntry(entry);
+            
+            Console.WriteLine(code);
+            
+            Console.ReadLine();
+        }
+
+        private static CompilationContext Compile(SyntaxTree[] parseResults)
+        {
+            var context = new CompilationContext();
+            context.Compile(parseResults);
+            return context;
         }
     }
 }

@@ -34,7 +34,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MyProgram.cs" />
+    <Compile Include="Pic12F629.cs" />
+    <Compile Include="Pic12F675.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CSharpToMpAsm.CodeAttributes\CSharpToMpAsm.CodeAttributes.csproj">
+      <Project>{2f31ebe7-655a-40e0-ab3f-6cd6d7c8766f}</Project>
+      <Name>CSharpToMpAsm.CodeAttributes</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -65,8 +65,39 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AstVisitorExtensions.cs" />
+    <Compile Include="AttributeArguments.cs" />
+    <Compile Include="AttributeArgumentsFinder.cs" />
+    <Compile Include="AttributeFinder.cs" />
+    <Compile Include="AttributeInfo.cs" />
+    <Compile Include="BodyContext.cs" />
+    <Compile Include="BodyGenerator.cs" />
+    <Compile Include="Codes\AddInts.cs" />
+    <Compile Include="Codes\Assign.cs" />
+    <Compile Include="Codes\BlockCode.cs" />
+    <Compile Include="Codes\Call.cs" />
+    <Compile Include="Codes\CastCode.cs" />
+    <Compile Include="Codes\GetValue.cs" />
+    <Compile Include="Codes\ICode.cs" />
+    <Compile Include="Codes\IntValue.cs" />
+    <Compile Include="Codes\NullCode.cs" />
+    <Compile Include="Codes\ResultLocation.cs" />
+    <Compile Include="CompilationContext.cs" />
+    <Compile Include="ILabel.cs" />
+    <Compile Include="IMemoryManager.cs" />
+    <Compile Include="IMpAsmWriter.cs" />
+    <Compile Include="IValueDestination.cs" />
+    <Compile Include="MemberDefinition.cs" />
+    <Compile Include="MemoryManager.cs" />
+    <Compile Include="MethodDefinition.cs" />
+    <Compile Include="ParameterDestination.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PropertyDestination.cs" />
+    <Compile Include="TypeDeclarationFinder.cs" />
+    <Compile Include="TypeDefinition.cs" />
+    <Compile Include="TypeDefinitions.cs" />
+    <Compile Include="Variable.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
