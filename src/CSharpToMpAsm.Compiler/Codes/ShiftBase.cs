@@ -36,6 +36,12 @@ namespace CSharpToMpAsm.Compiler.Codes
             Left.WriteMpAsm(writer, memManager);
             _location = memManager.Alloc(ResultType.Size);
 
+            for (int i = 0; i < ResultType.Size; i++)
+            {
+                writer.MoveFileToW(Left.Location + i);
+                writer.MoveWToFile(_location + i);
+            }
+
             var literal = Right as IntValue;
             if (literal != null)
             {

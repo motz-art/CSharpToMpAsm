@@ -10,7 +10,7 @@ namespace CSharpToMpAsm.Compiler.Codes
         {
             for (int j = 0; j < ResultType.Size; j++)
             {
-                writer.RotateLeftFileToW(Left.Location + j);
+                writer.RotateLeftFileToW(Location + j);
             }
         }
     }
