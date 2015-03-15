@@ -42,7 +42,7 @@ namespace CSharpToMpAsm.Compiler
                 }
             }
             var name = type.ResolveTypeName();
-            return _types.Select(x=>x.Definition).Single(x=>x.Name == name);
+            return _types.Select(x => x.Definition).Single(x => x.Name == name);
         }
 
         public void Compile(SyntaxTree[] parseResults)
@@ -67,7 +67,7 @@ namespace CSharpToMpAsm.Compiler
             var results = new List<Pair>();
 
             var finder = new TypeDeclarationFinder(
-                (d,n,u)=>results.Add(new Pair{Definition = new TypeDefinition(d, n, u.ToList()), Node = d}));
+                (d, n, u) => results.Add(new Pair { Definition = new TypeDefinition(d, n, u.ToList()), Node = d }));
 
             syntaxTree.AcceptVisitor(finder);
 
@@ -109,12 +109,14 @@ namespace CSharpToMpAsm.Compiler
         {
             var definition = new MethodDefinition(methodDeclaration.Name)
                                        {
-                                           IsAbstract = (methodDeclaration.Modifiers & Modifiers.Abstract)!=0,
-                                           IsVirtual = (methodDeclaration.Modifiers & (Modifiers.Abstract | Modifiers.Virtual))!=0,
+                                           IsAbstract = (methodDeclaration.Modifiers & Modifiers.Abstract) != 0,
+                                           IsVirtual = (methodDeclaration.Modifiers & (Modifiers.Abstract | Modifiers.Virtual)) != 0,
                                        };
 
-            definition.Parameters = methodDeclaration.Parameters.Select(x=>CreateParameter(x, definition)).ToArray();
-            
+            definition.ReturnType = ResolveType(methodDeclaration.ReturnType);
+
+            definition.Parameters = methodDeclaration.Parameters.Select(x => CreateParameter(x, definition)).ToArray();
+
             if (definition.Parameters.Length == 1 && definition.Parameters[0].Type.Size == 1)
             {
                 definition.Parameters[0].Location = ResultLocation.WorkRegister;
@@ -128,10 +130,10 @@ namespace CSharpToMpAsm.Compiler
             }
 
             var attributes = methodDeclaration.Attributes.SelectMany(x => x.AcceptVisitor(new AttributeFinder())).ToList();
-            
-            var addressAttribute = attributes.FirstOrDefault(x=>"Address".Equals(x.Name, StringComparison.InvariantCulture));
 
-            definition.CodeAddress = addressAttribute != null ? (int) addressAttribute.Arguments[0].Value : -1;
+            var addressAttribute = attributes.FirstOrDefault(x => "Address".Equals(x.Name, StringComparison.InvariantCulture));
+
+            definition.CodeAddress = addressAttribute != null ? (int)addressAttribute.Arguments[0].Value : -1;
 
             return definition;
         }
@@ -150,7 +152,7 @@ namespace CSharpToMpAsm.Compiler
 
         private void RegisterProperty(Pair pair, PropertyDeclaration propertyDeclaration)
         {
-            var attributes = propertyDeclaration.Attributes.SelectMany(x=>x.AcceptVisitor(new AttributeFinder())).ToList();
+            var attributes = propertyDeclaration.Attributes.SelectMany(x => x.AcceptVisitor(new AttributeFinder())).ToList();
             var addressAttr = attributes.FirstOrDefault(x => x.Name == "Address");
             ResultLocation address = null;
 
@@ -161,7 +163,7 @@ namespace CSharpToMpAsm.Compiler
             }
             else
             {
-                address = new ResultLocation((int) addressAttr.Arguments[0].Value);
+                address = new ResultLocation((int)addressAttr.Arguments[0].Value);
             }
 
             var propertyDestination = new PropertyDestination(propertyDeclaration.Name, type, address);
@@ -203,16 +205,16 @@ namespace CSharpToMpAsm.Compiler
         {
             var method = pair.Definition.ResolveMethod(methodDeclaration.Name);
 
-            if ((methodDeclaration.Modifiers & Modifiers.Override)!=0)
+            if ((methodDeclaration.Modifiers & Modifiers.Override) != 0)
             {
                 var overrides = pair.Definition.BaseTypes.Select(x => x.TryResolveMethod(methodDeclaration.Name))
-                    .Where(x=>x!=null).Single();
+                    .Where(x => x != null).Single();
                 method.Overrides = overrides;
             }
 
             if (method.IsAbstract) return;
 
-            var context = new BodyContext(pair.Definition, this);
+            var context = new BodyContext(pair.Definition, this, method);
 
             context.AddParameters(method.Parameters);
 
@@ -242,12 +244,12 @@ namespace CSharpToMpAsm.Compiler
 
             var stringWriter = new StringWriter();
             IMpAsmWriter writer = new MpAsmTextWriter(stringWriter);
-            
+
             var memManager = new MemoryManager(256);
 
             memManager.SetNotImplemented(0, 256);
-            memManager.SetReserved(0,0x1f);
-            memManager.SetFree(_currentMemPosition, 0x60 - _currentMemPosition);
+            memManager.SetReserved(0, 0x1f);
+            memManager.SetFree(_currentMemPosition, 0x7f - _currentMemPosition);
             memManager.SetReserved(0x80, 0x1f);
 
             foreach (var method in methods)
@@ -260,7 +262,7 @@ namespace CSharpToMpAsm.Compiler
                 method.Label = label;
 
                 var overridesMethod = method.Overrides;
-                while (overridesMethod!=null)
+                while (overridesMethod != null)
                 {
                     overridesMethod.Label = label;
                     overridesMethod = overridesMethod.Overrides;

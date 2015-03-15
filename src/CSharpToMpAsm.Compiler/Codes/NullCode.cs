@@ -6,17 +6,16 @@ namespace CSharpToMpAsm.Compiler.Codes
     {
         public TypeDefinition ResultType
         {
-            get { throw new NotImplementedException(); }
+            get { return TypeDefinitions.Void; }
         }
 
         public ResultLocation Location
         {
-            get { throw new NotImplementedException(); }
+            get { throw new InvalidOperationException("Void result type does not have location."); }
         }
 
         public void WriteMpAsm(IMpAsmWriter writer, IMemoryManager memManager)
         {
-            throw new NotImplementedException();
         }
     }
 }

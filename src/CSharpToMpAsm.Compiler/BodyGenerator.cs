@@ -413,7 +413,8 @@ namespace CSharpToMpAsm.Compiler
 
         public ICode VisitReturnStatement(ReturnStatement returnStatement, BodyContext data)
         {
-            throw new NotImplementedException();
+            var value = returnStatement.Expression.AcceptVisitor(this, data);
+            return new ReturnCode(data.CurrentMethod, value);
         }
 
         public ICode VisitSwitchStatement(SwitchStatement switchStatement, BodyContext data)

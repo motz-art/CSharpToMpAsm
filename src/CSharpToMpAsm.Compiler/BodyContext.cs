@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using ICSharpCode.NRefactory.CSharp;
 using CSharpToMpAsm.Compiler.Codes;
@@ -11,11 +12,18 @@ namespace CSharpToMpAsm.Compiler
         private readonly Dictionary<string, IValueDestination> _destinations = new Dictionary<string, IValueDestination>();
 
 
-        public BodyContext(TypeDefinition definition, CompilationContext context)
+        public BodyContext(TypeDefinition definition, CompilationContext context, MethodDefinition currentMethod)
         {
+            if (definition == null) throw new ArgumentNullException("definition");
+            if (context == null) throw new ArgumentNullException("context");
+            if (currentMethod == null) throw new ArgumentNullException("currentMethod");
+
             _definition = definition;
             _context = context;
+            CurrentMethod = currentMethod;
         }
+
+        public MethodDefinition CurrentMethod { get; private set; }
 
         public void AddDestination(IValueDestination variable)
         {

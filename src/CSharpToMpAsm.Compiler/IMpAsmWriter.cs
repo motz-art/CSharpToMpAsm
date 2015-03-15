@@ -19,6 +19,8 @@ namespace CSharpToMpAsm.Compiler
         void Call(ILabel label);
         void Return();
         void GoTo(ILabel label);
+        void Return(byte value);
+        void OrWFile(ResultLocation location);
     }
 
     class TextLabel : ILabel
@@ -105,6 +107,11 @@ namespace CSharpToMpAsm.Compiler
         public void Return()
         {
             _writer.WriteLine("\tRETURN");
+        }
+
+        public void Return(byte value)
+        {
+            _writer.WriteLine("\tRETLW 0x{0:X2}", value);
         }
 
         public void GoTo(ILabel label)

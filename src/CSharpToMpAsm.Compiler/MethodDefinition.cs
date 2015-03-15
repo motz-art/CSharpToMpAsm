@@ -8,9 +8,13 @@ namespace CSharpToMpAsm.Compiler
         public ILabel Label;
         public ParameterDestination[] Parameters { get; set; }
 
+        public TypeDefinition ReturnType { get; set; }
+        public ResultLocation ReturnValueLocation { get; set; }
+
         public MethodDefinition(string name)
         {
             Name = name;
+            ReturnType = TypeDefinitions.Void;
         }
 
         public int CodeAddress { get; set; }

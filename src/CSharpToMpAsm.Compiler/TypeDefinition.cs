@@ -101,6 +101,40 @@ namespace CSharpToMpAsm.Compiler
             methods.Add(definition);
         }
 
+        public static bool operator ==(TypeDefinition a, TypeDefinition b)
+        {
+            if (ReferenceEquals(a, b)) return true;
+            if (ReferenceEquals(a, null)) return false;
+            if (ReferenceEquals(b, null)) return false;
+            return a.Equals(b);
+        }
+
+        public static bool operator !=(TypeDefinition a, TypeDefinition b)
+        {
+            return !(a == b);
+        }
+
+        protected bool Equals(TypeDefinition other)
+        {
+            return string.Equals(Name, other.Name) && string.Equals(NameSpace, other.NameSpace);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((TypeDefinition) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return ((Name != null ? Name.GetHashCode() : 0)*397) ^ (NameSpace != null ? NameSpace.GetHashCode() : 0);
+            }
+        }
+
         public override string ToString()
         {
             return string.Format("{0}", Name);
