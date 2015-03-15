@@ -1,8 +1,12 @@
 namespace CSharpToMpAsm.Compiler.Codes
 {
-    public class ShiftLift : ShiftBase
+    public class ShiftLeft : ShiftBase
     {
-        public ShiftLift(ICode left, ICode right) : base(left, right)
+        public ShiftLeft(ICode left, ICode right) : base(left, right)
+        {
+        }        
+        
+        public ShiftLeft(ICode left, ICode right, TypeDefinition resultType) : base(left, right, resultType)
         {
         }
 

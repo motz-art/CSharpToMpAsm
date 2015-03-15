@@ -6,7 +6,7 @@ namespace CSharpToMpAsm.Compiler.Codes
     {
         public ICode Value { get; set; }
 
-        private readonly MethodDefinition _method;
+        public MethodDefinition Method { get; private set; }
 
         public TypeDefinition ResultType
         {
@@ -21,7 +21,7 @@ namespace CSharpToMpAsm.Compiler.Codes
         public ReturnCode(MethodDefinition method, ICode value)
         {
             if (method == null) throw new ArgumentNullException("method");
-            _method = method;
+            Method = method;
             Value = value;
         }
 
@@ -29,7 +29,7 @@ namespace CSharpToMpAsm.Compiler.Codes
         {
             if (Value != null)
             {
-                if (Value.ResultType == TypeDefinitions.Byte && _method.ReturnValueLocation.IsWorkRegister)
+                if (Value.ResultType == TypeDefinitions.Byte && Method.ReturnValueLocation.IsWorkRegister)
                 {
                     var value = Value;
                     var cast = value as CastCode;
@@ -48,7 +48,7 @@ namespace CSharpToMpAsm.Compiler.Codes
                 if (Value.ResultType != TypeDefinitions.Void)
                 {
                     writer.MoveFileToW(Value.Location);
-                    writer.MoveWToFile(_method.ReturnValueLocation);
+                    writer.MoveWToFile(Method.ReturnValueLocation);
                 }
             }
             writer.Return();

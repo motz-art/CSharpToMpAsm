@@ -3,7 +3,7 @@ using System.Text;
 
 namespace CSharpToMpAsm.Compiler.Codes
 {
-    internal class CastCode : ICode
+    public class CastCode : ICode
     {
         private readonly TypeDefinition _type;
         private ResultLocation _location;

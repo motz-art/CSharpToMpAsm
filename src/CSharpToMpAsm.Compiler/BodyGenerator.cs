@@ -75,7 +75,7 @@ namespace CSharpToMpAsm.Compiler
                     case BinaryOperatorType.BitwiseOr:
                     return new BitwiseOr(left, right);
                     case BinaryOperatorType.ShiftLeft:
-                    return new ShiftLift(left, right);
+                    return new ShiftLeft(left, right);
                     case BinaryOperatorType.ShiftRight:
                     return new ShiftRight(left, right);
             }

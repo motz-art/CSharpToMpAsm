@@ -5,55 +5,55 @@ namespace CSharpToMpAsm.Compiler.Codes
 {
     internal class Call : ICode
     {
-        private readonly MethodDefinition _method;
-        private readonly ICode[] _args;
+        public MethodDefinition Method { get; private set; }
+        public ICode[] Args { get; private set; }
 
         public Call(MethodDefinition method, ICode[] args)
         {
-            _method = method;
-            _args = args;
+            Method = method;
+            Args = args;
         }
 
         public TypeDefinition ResultType
         {
             get
             {
-                return _method.ReturnType;
+                return Method.ReturnType;
             }
         }
 
         public ResultLocation Location
         {
-            get { return _method.ReturnValueLocation; }
+            get { return Method.ReturnValueLocation; }
         }
 
         public void WriteMpAsm(IMpAsmWriter writer, IMemoryManager memManager)
         {
-            if (_args.Length != _method.Parameters.Length)
+            if (Args.Length != Method.Parameters.Length)
                 throw new InvalidOperationException("Method parameters count do not match actually supplied.");
 
-            if (_args.Length > 0)
+            if (Args.Length > 0)
             {
-                for (int i = 0; i < _args.Length; i++)
+                for (int i = 0; i < Args.Length; i++)
                 {
-                    var code = _args[i];
-                    if (code.ResultType != _method.Parameters[i].Type)
+                    var code = Args[i];
+                    if (code.ResultType != Method.Parameters[i].Type)
                     {
                         throw new InvalidOperationException("Argument type do not match required by method.");
                     }
-                    code = new Assign(_method.Parameters[i], code);
+                    code = new Assign(Method.Parameters[i], code);
 
                     code.WriteMpAsm(writer, memManager);
                 }
             }
 
-            if (ResultType != TypeDefinitions.Void && _method.ReturnValueLocation == null)
+            if (ResultType != TypeDefinitions.Void && Method.ReturnValueLocation == null)
             {
                 var location = memManager.Alloc(ResultType.Size);
-                _method.ReturnValueLocation = location;
+                Method.ReturnValueLocation = location;
             }
 
-            writer.Call(_method.Label);
+            writer.Call(Method.Label);
         }
     }
 }

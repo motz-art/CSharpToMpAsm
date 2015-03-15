@@ -283,7 +283,8 @@ namespace CSharpToMpAsm.Compiler
             {
                 writer.WriteLabel(method.Label);
 
-                method.Body.WriteMpAsm(writer, memManager);
+                var optimized = method.Body.Optimize();
+                optimized.WriteMpAsm(writer, memManager);
 
                 writer.Return();
 

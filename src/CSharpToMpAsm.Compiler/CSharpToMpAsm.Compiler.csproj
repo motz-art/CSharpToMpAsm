@@ -80,6 +80,7 @@
     <Compile Include="Codes\BlockCode.cs" />
     <Compile Include="Codes\Call.cs" />
     <Compile Include="Codes\CastCode.cs" />
+    <Compile Include="Codes\CodeOptimizationExtentions.cs" />
     <Compile Include="Codes\GetReference.cs" />
     <Compile Include="Codes\GetValue.cs" />
     <Compile Include="Codes\ICode.cs" />
@@ -89,7 +90,7 @@
     <Compile Include="Codes\ResultLocation.cs" />
     <Compile Include="Codes\ReturnCode.cs" />
     <Compile Include="Codes\ShiftBase.cs" />
-    <Compile Include="Codes\ShiftLift.cs" />
+    <Compile Include="Codes\ShiftLeft.cs" />
     <Compile Include="Codes\ShiftRight.cs" />
     <Compile Include="CompilationContext.cs" />
     <Compile Include="Codes\GotoCode.cs" />

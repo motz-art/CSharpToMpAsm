@@ -5,11 +5,11 @@ namespace CSharpToMpAsm.Compiler.Codes
 {
     internal class BlockCode : ICode
     {
-        private readonly ICode[] _codes;
+        public ICode[] Codes { get; private set; }
 
         public BlockCode(ICode[] codes)
         {
-            _codes = codes;
+            Codes = codes;
         }
 
         public TypeDefinition ResultType
@@ -24,7 +24,7 @@ namespace CSharpToMpAsm.Compiler.Codes
 
         public void WriteMpAsm(IMpAsmWriter writer, IMemoryManager memManager)
         {
-            foreach (var code in _codes)
+            foreach (var code in Codes)
             {
                 code.WriteMpAsm(writer, memManager);
             }

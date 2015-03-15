@@ -4,8 +4,9 @@ namespace CSharpToMpAsm.Compiler.Codes
 {
     public abstract class BitwiseBase : ICode
     {
-        private readonly ICode _left;
-        private readonly ICode _right;
+        public ICode Left { get; private set; }
+        public ICode Right { get; private set; }
+
         private ResultLocation _location;
 
         public BitwiseBase(ICode left, ICode right)
@@ -27,13 +28,13 @@ namespace CSharpToMpAsm.Compiler.Codes
                 left = new CastCode(right.ResultType, left);
             }
 
-            _left = left;
-            _right = right;
+            Left = left;
+            Right = right;
         }
 
         public TypeDefinition ResultType
         {
-            get { return _left.ResultType; }
+            get { return Left.ResultType; }
         }
 
         public ResultLocation Location
@@ -43,9 +44,9 @@ namespace CSharpToMpAsm.Compiler.Codes
 
         public void WriteMpAsm(IMpAsmWriter writer, IMemoryManager memManager)
         {
-            _left.WriteMpAsm(writer, memManager);
+            Left.WriteMpAsm(writer, memManager);
             _location = memManager.Alloc(ResultType.Size);
-            if (_left.Location.IsWorkRegister)
+            if (Left.Location.IsWorkRegister)
             {
                 if (ResultType.Size != 1)
                 {
@@ -57,16 +58,16 @@ namespace CSharpToMpAsm.Compiler.Codes
             {
                 for (int i = 0; i < ResultType.Size; i++)
                 {
-                    writer.MoveFileToW(_left.Location + i);
+                    writer.MoveFileToW(Left.Location + i);
                     writer.MoveWToFile(_location + i);
                 }
             }
 
-            _right.WriteMpAsm(writer, memManager);
+            Right.WriteMpAsm(writer, memManager);
             
-            if (_right.Location.IsWorkRegister)
+            if (Right.Location.IsWorkRegister)
             {
-                if (_right.ResultType.Size != 1)
+                if (Right.ResultType.Size != 1)
                 {
                     throw new InvalidOperationException("Result sizes do not match.");
                 }
@@ -77,7 +78,7 @@ namespace CSharpToMpAsm.Compiler.Codes
             {
                 for (int i = 0; i < ResultType.Size; i++)
                 {
-                    writer.MoveFileToW(_right.Location + i);
+                    writer.MoveFileToW(Right.Location + i);
                     WriteBitwiseOperation(writer, _location + i);
                 }
             }
