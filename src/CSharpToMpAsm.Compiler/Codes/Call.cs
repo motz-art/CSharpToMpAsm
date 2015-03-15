@@ -16,12 +16,15 @@ namespace CSharpToMpAsm.Compiler.Codes
 
         public TypeDefinition ResultType
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                return _method.ReturnType;
+            }
         }
 
         public ResultLocation Location
         {
-            get { throw new NotImplementedException(); }
+            get { return _method.ReturnValueLocation; }
         }
 
         public void WriteMpAsm(IMpAsmWriter writer, IMemoryManager memManager)
@@ -42,6 +45,12 @@ namespace CSharpToMpAsm.Compiler.Codes
 
                     code.WriteMpAsm(writer, memManager);
                 }
+            }
+
+            if (ResultType != TypeDefinitions.Void && _method.ReturnValueLocation == null)
+            {
+                var location = memManager.Alloc(ResultType.Size);
+                _method.ReturnValueLocation = location;
             }
 
             writer.Call(_method.Label);
