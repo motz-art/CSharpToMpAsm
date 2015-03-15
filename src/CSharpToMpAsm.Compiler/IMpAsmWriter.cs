@@ -40,7 +40,7 @@ namespace CSharpToMpAsm.Compiler
 
         public ILabel CreateLabel(string name)
         {
-            return new TextLabel{Name = name, Address = -1};
+            return new TextLabel { Name = name, Address = -1 };
         }
 
         public ILabel CreateLabel(string name, int address)
@@ -48,7 +48,7 @@ namespace CSharpToMpAsm.Compiler
             if (address < 0)
                 throw new ArgumentException("Label address should be greater or equal to 0.");
 
-            return new TextLabel{Name = name, Address = address};
+            return new TextLabel { Name = name, Address = address };
         }
 
         public void Comment(string text)
