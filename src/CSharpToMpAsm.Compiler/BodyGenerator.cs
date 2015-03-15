@@ -183,7 +183,7 @@ namespace CSharpToMpAsm.Compiler
 
         public ICode VisitParenthesizedExpression(ParenthesizedExpression parenthesizedExpression, BodyContext data)
         {
-            throw new NotImplementedException();
+            return parenthesizedExpression.Expression.AcceptVisitor(this, data);
         }
 
         public ICode VisitPointerReferenceExpression(PointerReferenceExpression pointerReferenceExpression, BodyContext data)
