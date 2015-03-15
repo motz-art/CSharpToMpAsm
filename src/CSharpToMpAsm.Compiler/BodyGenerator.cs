@@ -70,6 +70,14 @@ namespace CSharpToMpAsm.Compiler
             {
                     case BinaryOperatorType.Add:
                     return CreateAddOperator(left, right);
+                    case BinaryOperatorType.BitwiseAnd:
+                    return new BitwiseAnd(left, right);
+                    case BinaryOperatorType.BitwiseOr:
+                    return new BitwiseOr(left, right);
+                    case BinaryOperatorType.ShiftLeft:
+                    return new ShiftLift(left, right);
+                    case BinaryOperatorType.ShiftRight:
+                    return new ShiftRight(left, right);
             }
             throw new NotImplementedException();
 

@@ -21,6 +21,10 @@ namespace CSharpToMpAsm.Compiler
         void GoTo(ILabel label);
         void Return(byte value);
         void OrWFile(ResultLocation location);
+        void RotateLeftFileToW(ResultLocation location);
+        void RotateRightFileToW(ResultLocation location);
+        void AndWFile(ResultLocation location);
+        void ClearFile(ResultLocation location);
     }
 
     class TextLabel : ILabel
@@ -112,6 +116,31 @@ namespace CSharpToMpAsm.Compiler
         public void Return(byte value)
         {
             _writer.WriteLine("\tRETLW 0x{0:X2}", value);
+        }
+
+        public void OrWFile(ResultLocation location)
+        {
+            _writer.WriteLine("\tIORWF 0x{0:X2}", location);
+        }
+
+        public void RotateLeftFileToW(ResultLocation location)
+        {
+            _writer.WriteLine("\tRLF {0},w", location);
+        }
+
+        public void RotateRightFileToW(ResultLocation location)
+        {
+            _writer.WriteLine("\tRRF {0},w", location);
+        }
+
+        public void AndWFile(ResultLocation location)
+        {
+            _writer.WriteLine("\tANDWF {0},f", location);
+        }
+
+        public void ClearFile(ResultLocation location)
+        {
+            _writer.WriteLine("\tCLRF {0}");
         }
 
         public void GoTo(ILabel label)
