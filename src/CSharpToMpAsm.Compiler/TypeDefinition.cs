@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ICSharpCode.NRefactory.CSharp;
-using CSharpToMpAsm.Compiler.Codes;
 
 namespace CSharpToMpAsm.Compiler
 {
@@ -12,8 +11,17 @@ namespace CSharpToMpAsm.Compiler
         public List<string> NameSpaces { get; set; }
         private readonly Dictionary<string, List<MethodDefinition>> _methods = new Dictionary<string, List<MethodDefinition>>();
         private readonly Dictionary<string, IValueDestination> _destinations = new Dictionary<string, IValueDestination>();
+        private List<TypeDefinition> _typeParameters = new List<TypeDefinition>();
 
         public bool IsAbstract { get; set; }
+
+        public bool IsReference { get; set; }
+
+        public List<TypeDefinition> TypeParameters
+        {
+            get { return _typeParameters; }
+            set { _typeParameters = value; }
+        }
 
         public string Name { get; set; }
 

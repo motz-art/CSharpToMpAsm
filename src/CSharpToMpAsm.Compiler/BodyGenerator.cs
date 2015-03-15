@@ -116,6 +116,19 @@ namespace CSharpToMpAsm.Compiler
 
         public ICode VisitDirectionExpression(DirectionExpression directionExpression, BodyContext data)
         {
+            if (directionExpression.FieldDirection == FieldDirection.None)
+                return directionExpression.AcceptVisitor(this, data);
+
+            if (directionExpression.FieldDirection == FieldDirection.Ref ||
+                directionExpression.FieldDirection == FieldDirection.Out)
+            {
+                var code = directionExpression.Expression.AcceptVisitor(this, data);
+                if (code.ResultType.IsReference) return code;
+                var getValue = code as GetValue;
+                if (getValue==null)throw new InvalidOperationException("It is expected that code should be GetValue.");
+                return new GetReference(getValue.Variable);
+            }
+
             throw new NotImplementedException();
         }
 

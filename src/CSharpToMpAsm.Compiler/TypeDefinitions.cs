@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace CSharpToMpAsm.Compiler
 {
     public static class TypeDefinitions
@@ -50,5 +52,18 @@ namespace CSharpToMpAsm.Compiler
                                                      Name = "SByte",
                                                      NameSpace = "System"
                                                  };
+
+        public static TypeDefinition Reference(TypeDefinition type)
+        {
+            return new TypeDefinition
+            {
+                Size = 1,
+                IsAbstract = false,
+                Name = "&"+type.Name,
+                NameSpace = "System",
+                IsReference = true,
+                TypeParameters = new List<TypeDefinition> { type }
+            };
+        }
     }
 }

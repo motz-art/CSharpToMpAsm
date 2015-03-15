@@ -10,14 +10,48 @@ namespace Demo
         [Address(0x05)]
         protected byte GPIO { get; set; }
 
+        [Address(0x03)]
+        protected byte _STATUS { get; set; }
+
         [Address(0)]
-        private void Start()
+        public virtual void Start()
         {
+            Startup();
+
             begin: 
             
             DoWork();
             
             goto begin;
+        }
+
+        public virtual void Startup() { }
+
+        [Address(4)]
+        protected void _Interrupt(ref byte w)
+        {
+            var wTemp = w;
+            var statusTemp = SWAPFW(_STATUS);
+            
+            Interrupt();
+            
+            _STATUS = SWAPFW(statusTemp);
+            SWAPF(ref wTemp);
+            w = SWAPFW(wTemp);
+        }
+
+        protected virtual void Interrupt()
+        {
+        }
+
+        public byte SWAPFW(byte value)
+        {
+            return (byte) (((value & 0x0F) << 4) | ((value & 0xF0) >> 4));
+        }
+
+        public void SWAPF(ref byte value)
+        {
+            value = (byte)(((value & 0x0F) << 4) | ((value & 0xF0) >> 4));
         }
 
         protected abstract void DoWork();

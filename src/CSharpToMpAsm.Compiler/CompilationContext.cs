@@ -147,7 +147,17 @@ namespace CSharpToMpAsm.Compiler
 
         private ParameterDestination CreateParameter(ParameterDeclaration declaration, MethodDefinition definition)
         {
-            return new ParameterDestination(declaration.Name, ResolveType(declaration.Type));
+            var type = ResolveType(declaration.Type);
+            switch (declaration.ParameterModifier)
+            {
+                case ParameterModifier.None: break;
+                case ParameterModifier.Out:
+                case ParameterModifier.Ref:
+                    type = TypeDefinitions.Reference(type);
+                    break;
+                default: throw new NotImplementedException();
+            }
+            return new ParameterDestination(declaration.Name, type);
         }
 
         private void RegisterProperty(Pair pair, PropertyDeclaration propertyDeclaration)

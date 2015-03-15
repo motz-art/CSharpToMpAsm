@@ -13,7 +13,14 @@ namespace CSharpToMpAsm.Compiler.Codes
 
         public TypeDefinition ResultType
         {
-            get { return Variable.Type; }
+            get
+            {
+                if (Variable.Type.IsReference)
+                {
+                    return Variable.Type.TypeParameters[0];
+                }
+                return Variable.Type;
+            }
         }
 
         public ResultLocation Location

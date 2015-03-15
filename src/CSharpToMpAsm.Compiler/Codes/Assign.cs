@@ -24,13 +24,26 @@ namespace CSharpToMpAsm.Compiler.Codes
             get { throw new NotImplementedException(); }
         }
 
+        private static TypeDefinition Dereference(TypeDefinition type)
+        {
+            if (!type.IsReference) return type;
+            if (type.TypeParameters == null || type.TypeParameters.Count != 1)
+            {
+                throw new InvalidOperationException("Invalid reference type.");
+            }
+            return type.TypeParameters[0];
+        }
+
         public void WriteMpAsm(IMpAsmWriter writer, IMemoryManager memManager)
         {
-            var address = memManager.Alloc(Destination);
-            if (Destination.Type != Code.ResultType)
+            var destinationType = Dereference(Destination.Type);
+            var codeType = Dereference(Code.ResultType);
+
+            if (destinationType != codeType)
             {
                 throw new InvalidOperationException("DestinationType do not match expression type.");
             }
+            
             Code.WriteMpAsm(writer, memManager);
 
             writer.Comment(string.Format("; Assign {0} at {1} to {2} ({3})",
@@ -38,8 +51,7 @@ namespace CSharpToMpAsm.Compiler.Codes
                     Code.Location,
                     Destination.Location, Destination.Name));
 
-            var type = Destination.Type;
-            if (Destination.Type == TypeDefinitions.Byte)
+            if (destinationType == TypeDefinitions.Byte)
             {
                 if (!Code.Location.IsWorkRegister)
                 {
@@ -51,7 +63,7 @@ namespace CSharpToMpAsm.Compiler.Codes
                 }
                 return;
             }
-            if (Destination.Type == TypeDefinitions.Int32)
+            if (destinationType == TypeDefinitions.Int32)
             {
                 for (int i = 0; i < 4; i++)
                 {

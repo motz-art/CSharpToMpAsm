@@ -80,6 +80,7 @@
     <Compile Include="Codes\BlockCode.cs" />
     <Compile Include="Codes\Call.cs" />
     <Compile Include="Codes\CastCode.cs" />
+    <Compile Include="Codes\GetReference.cs" />
     <Compile Include="Codes\GetValue.cs" />
     <Compile Include="Codes\ICode.cs" />
     <Compile Include="Codes\IntValue.cs" />
