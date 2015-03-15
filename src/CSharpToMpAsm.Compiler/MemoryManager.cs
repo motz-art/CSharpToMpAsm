@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using CSharpToMpAsm.Compiler.Codes;
 
 namespace CSharpToMpAsm.Compiler
@@ -118,6 +119,11 @@ namespace CSharpToMpAsm.Compiler
         public void DAlloc(IValueDestination destination)
         {
             throw new NotImplementedException();
+        }
+
+        public int CalcAvailableBytes()
+        {
+            return _memoryMap.Where(x => x == AddressState.Free).Count();
         }
     }
 }

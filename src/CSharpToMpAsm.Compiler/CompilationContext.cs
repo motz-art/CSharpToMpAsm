@@ -281,6 +281,10 @@ namespace CSharpToMpAsm.Compiler
 
                 writer.Comment("");
             }
+
+            Console.WriteLine("Variables + Properties: {0} bytes.",_currentMemPosition - 0x20);
+            Console.WriteLine("Available: {0} bytes.",memManager.CalcAvailableBytes());
+
             return stringWriter.ToString();
         }
 
