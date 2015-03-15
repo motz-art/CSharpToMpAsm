@@ -5,13 +5,13 @@ namespace CSharpToMpAsm.Compiler.Codes
 {
     internal class IntValue : ICode
     {
-        private readonly int _data;
         private static ResultLocation _staticAddress;
         private ResultLocation _address;
+        public int Value { get; private set; }
 
-        public IntValue(int data)
+        public IntValue(int value)
         {
-            _data = data;
+            Value = value;
         }
 
         public TypeDefinition ResultType
@@ -41,9 +41,9 @@ namespace CSharpToMpAsm.Compiler.Codes
                 _address = _staticAddress;
             }
             
-            var bytes = BitConverter.GetBytes(_data);
+            var bytes = BitConverter.GetBytes(Value);
 
-            writer.Comment(string.Format("; IntLiteral {0}(0x{0:X8}) to 0x{1:X2}.", _data, _address));
+            writer.Comment(string.Format("; IntLiteral {0}(0x{0:X8}) to 0x{1:X2}.", Value, _address));
 
             for (int i = 0; i < bytes.Length; i++)
             {
