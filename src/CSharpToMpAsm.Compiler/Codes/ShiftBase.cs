@@ -8,10 +8,16 @@ namespace CSharpToMpAsm.Compiler.Codes
         public ICode Right { get; private set; }
         private ResultLocation _location;
 
-        public ShiftBase(ICode left, ICode right)
+        public ShiftBase(ICode left, ICode right) : this(left, right, TypeDefinitions.Int32)
+        {
+            
+        }
+
+        public ShiftBase(ICode left, ICode right, TypeDefinition resultType)
         {
             if (left == null) throw new ArgumentNullException("left");
             if (right == null) throw new ArgumentNullException("right");
+            if (resultType == null) throw new ArgumentNullException("resultType");
 
             var literal = right as IntValue;
             if (literal==null)
@@ -19,12 +25,10 @@ namespace CSharpToMpAsm.Compiler.Codes
 
             Left = left;
             Right = right;
+            ResultType = resultType; 
         }
 
-        public TypeDefinition ResultType
-        {
-            get { return TypeDefinitions.Int32; }
-        }
+        public TypeDefinition ResultType { get; private set; }
 
         public ResultLocation Location
         {
