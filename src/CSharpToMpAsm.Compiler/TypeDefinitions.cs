@@ -7,6 +7,11 @@ namespace CSharpToMpAsm.Compiler
             return type == Int32 || type == Byte || type == SByte;
         }
 
+        public static bool IsSigned(this TypeDefinition type)
+        {
+            return type == Int32 || type == SByte;
+        }
+
         public static TypeDefinition Void = new TypeDefinition
                                                 {
                                                     Name = "void",
