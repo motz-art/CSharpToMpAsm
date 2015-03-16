@@ -6,24 +6,20 @@ namespace CSharpToMpAsm.Compiler.Codes
     {
         public IValueDestination Value { get; set; }
 
-        public TypeDefinition ResultType
-        {
-            get { return TypeDefinitions.Reference(Value.Type); }
-        }
+        public TypeDefinition ResultType { get; private set; }
 
-        public ResultLocation Location
-        {
-            get { return Value.Location; }
-        }
+        public ResultLocation Location { get; private set; }
 
         public GetReference(IValueDestination value)
         {
             Value = value;
+            ResultType = TypeDefinitions.Reference(value.Type);
         }
 
         public void WriteMpAsm(IMpAsmWriter writer, IMemoryManager memManager)
         {
-            
+            Location = memManager.Alloc(Value.Type.Size);
+            writer.Comment("; Taking references is not implemented.");
         }
     }
 }

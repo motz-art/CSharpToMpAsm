@@ -43,7 +43,7 @@ namespace CSharpToMpAsm.Compiler.Codes
             {
                 throw new InvalidOperationException("DestinationType do not match expression type.");
             }
-            
+
             Code.WriteMpAsm(writer, memManager);
 
             writer.Comment(string.Format("; Assign {0} at {1} to {2} ({3})",
@@ -51,28 +51,13 @@ namespace CSharpToMpAsm.Compiler.Codes
                     Code.Location,
                     Destination.Location, Destination.Name));
 
-            if (destinationType == TypeDefinitions.Byte)
+            for (int i = 0; i < Destination.Type.Size; i++)
             {
-                if (!Code.Location.IsWorkRegister)
-                {
-                    writer.MoveFileToW(Code.Location);
-                }
-                if (!Destination.Location.IsWorkRegister)
-                {
-                    writer.MoveWToFile(Destination.Location);
-                }
-                return;
+                writer.MoveFileToW(Code.Location + i);
+                writer.MoveWToFile(Destination.Location + i);
             }
-            if (destinationType == TypeDefinitions.Int32)
-            {
-                for (int i = 0; i < 4; i++)
-                {
-                    writer.MoveFileToW(Code.Location + i);
-                    writer.MoveWToFile(Destination.Location + i);
-                }
-                return;
-            }
-            throw new NotImplementedException();
+            if (!(Code is Call) && !(Code is GetReference))
+                memManager.Dispose(Code.Location, Code.ResultType.Size);
         }
     }
 }
