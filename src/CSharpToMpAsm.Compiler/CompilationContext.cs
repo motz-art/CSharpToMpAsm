@@ -286,6 +286,7 @@ namespace CSharpToMpAsm.Compiler
                 var optimized = method.Body.Optimize();
                 optimized.WriteMpAsm(writer, memManager);
 
+                if (method.ReturnType == TypeDefinitions.Void)
                 writer.Return();
 
                 writer.Comment("; End of method {0}.", method.Name);

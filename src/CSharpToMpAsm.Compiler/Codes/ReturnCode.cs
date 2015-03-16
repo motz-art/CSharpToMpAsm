@@ -27,7 +27,7 @@ namespace CSharpToMpAsm.Compiler.Codes
 
         public void WriteMpAsm(IMpAsmWriter writer, IMemoryManager memManager)
         {
-            if (Value != null)
+            if (Value != null && Value.ResultType != TypeDefinitions.Void)
             {
                 if (Value.ResultType == TypeDefinitions.Byte && Method.ReturnValueLocation.IsWorkRegister)
                 {
@@ -45,11 +45,13 @@ namespace CSharpToMpAsm.Compiler.Codes
                 }
                 Value.WriteMpAsm(writer, memManager);
 
-                if (Value.ResultType != TypeDefinitions.Void)
+                for (int i = 0; i < ResultType.Size; i++)
                 {
-                    writer.MoveFileToW(Value.Location);
-                    writer.MoveWToFile(Method.ReturnValueLocation);
+                    writer.MoveFileToW(Value.Location + i);
+                    writer.MoveWToFile(Method.ReturnValueLocation + i);
                 }
+
+                memManager.Dispose(Value.Location, Value.ResultType.Size);
             }
             writer.Return();
         }

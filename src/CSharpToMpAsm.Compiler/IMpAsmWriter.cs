@@ -85,7 +85,7 @@ namespace CSharpToMpAsm.Compiler
             if (location.IsWorkRegister)
                 return;
 
-            _writer.WriteLine("\tMOVF 0x{0:X2}, w", location.Address);
+            _writer.WriteLine("\tMOVF {0}, w", location);
         }
 
         public void MoveWToFile(ResultLocation location)
@@ -93,7 +93,7 @@ namespace CSharpToMpAsm.Compiler
             if (location.IsWorkRegister)
                 return;
 
-            _writer.WriteLine("\tMOVWF 0x{0:X2}", location.Address);
+            _writer.WriteLine("\tMOVWF {0}", location);
         }
 
         public void LoadLiteralToW(byte literal)
@@ -120,17 +120,17 @@ namespace CSharpToMpAsm.Compiler
 
         public void OrWFile(ResultLocation location)
         {
-            _writer.WriteLine("\tIORWF 0x{0:X2}", location);
+            _writer.WriteLine("\tIORWF {0},f", location);
         }
 
         public void RotateLeftFileToW(ResultLocation location)
         {
-            _writer.WriteLine("\tRLF {0},w", location);
+            _writer.WriteLine("\tRLF {0},f", location);
         }
 
         public void RotateRightFileToW(ResultLocation location)
         {
-            _writer.WriteLine("\tRRF {0},w", location);
+            _writer.WriteLine("\tRRF {0},f", location);
         }
 
         public void AndWFile(ResultLocation location)
@@ -140,7 +140,7 @@ namespace CSharpToMpAsm.Compiler
 
         public void ClearFile(ResultLocation location)
         {
-            _writer.WriteLine("\tCLRF {0}");
+            _writer.WriteLine("\tCLRF {0}", location);
         }
 
         public void GoTo(ILabel label)

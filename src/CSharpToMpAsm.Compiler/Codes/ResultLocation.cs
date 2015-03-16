@@ -2,7 +2,7 @@ namespace CSharpToMpAsm.Compiler.Codes
 {
     public class ResultLocation
     {
-        public bool IsWorkRegister{get { return ReferenceEquals(WorkRegister, this); }}
+        public bool IsWorkRegister{get { return Address == -1; }}
 
         public int Address { get; set; }
         public int Bank { get { return (Address & 0x80)>>7; } }

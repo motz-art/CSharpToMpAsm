@@ -7,9 +7,9 @@ namespace CSharpToMpAsm.Compiler
         public PropertyDestination(string name, TypeDefinition type, ResultLocation address)
         {
             Name = name;
-            GetValue = new GetValue(this);
             Type = type;
             Location = address;
+            GetValue = new GetValue(this);
         }
 
         public string Name { get; private set; }

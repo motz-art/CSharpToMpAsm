@@ -45,33 +45,21 @@ namespace CSharpToMpAsm.Compiler.Codes
         public void WriteMpAsm(IMpAsmWriter writer, IMemoryManager memManager)
         {
             Left.WriteMpAsm(writer, memManager);
-            _location = memManager.Alloc(ResultType.Size);
+
             if (Left.Location.IsWorkRegister)
             {
-                if (ResultType.Size != 1)
-                {
-                    throw new InvalidOperationException("Result sizes do not match.");
-                }
+                _location = memManager.Alloc(ResultType.Size);
                 writer.MoveWToFile(_location);
             }
             else
             {
-                for (int i = 0; i < ResultType.Size; i++)
-                {
-                    writer.MoveFileToW(Left.Location + i);
-                    writer.MoveWToFile(_location + i);
-                }
+                _location = Left.Location;
             }
 
             Right.WriteMpAsm(writer, memManager);
             
             if (Right.Location.IsWorkRegister)
             {
-                if (Right.ResultType.Size != 1)
-                {
-                    throw new InvalidOperationException("Result sizes do not match.");
-                }
-
                 WriteBitwiseOperation(writer, _location);
             }
             else
@@ -81,6 +69,7 @@ namespace CSharpToMpAsm.Compiler.Codes
                     writer.MoveFileToW(Right.Location + i);
                     WriteBitwiseOperation(writer, _location + i);
                 }
+                memManager.Dispose(Right.Location, Right.ResultType.Size);
             }
         }
 

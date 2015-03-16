@@ -42,7 +42,7 @@ namespace CSharpToMpAsm.Compiler.Codes
 
         private static ICode Optimize(ReturnCode returnCode)
         {
-            return new ReturnCode(returnCode.Method, returnCode.Value);
+            return new ReturnCode(returnCode.Method, returnCode.Value.Optimize());
         }
 
         private static ICode Optimize(Assign assign)
@@ -89,7 +89,14 @@ namespace CSharpToMpAsm.Compiler.Codes
             {
                 return ReduceType((BitwiseAnd)code, toType);
             }
-
+            if (code is IntValue)
+            {
+                return ReduceType((IntValue)code, toType);
+            }
+            if (code is GetValue)
+            {
+                return ReduceType((GetValue)code, toType);
+            }
             return new CastCode(toType, code);
         }
 
@@ -111,6 +118,16 @@ namespace CSharpToMpAsm.Compiler.Codes
         public static ICode ReduceType(ShiftRight code, TypeDefinition toType)
         {
             return new ShiftRight(code.Left.ReduceType(toType), code.Right, toType);
+        }
+
+        public static ICode ReduceType(IntValue code, TypeDefinition toType)
+        {
+            return new IntValue(code.Value, toType);
+        }
+
+        public static ICode ReduceType(GetValue code, TypeDefinition toType)
+        {
+            return new GetValue(code.Variable, toType);
         }
 
         public static ICode ReduceType(CastCode castCode, TypeDefinition toType)

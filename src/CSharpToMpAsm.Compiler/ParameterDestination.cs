@@ -7,8 +7,8 @@ namespace CSharpToMpAsm.Compiler
         public ParameterDestination(string name, TypeDefinition type)
         {
             Name = name;
-            GetValue = new GetValue(this);
             Type = type;
+            GetValue = new GetValue(this);
         }
 
         public string Name { get; private set; }

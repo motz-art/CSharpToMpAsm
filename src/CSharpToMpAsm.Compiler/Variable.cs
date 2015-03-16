@@ -7,9 +7,9 @@ namespace CSharpToMpAsm.Compiler
         public Variable(string name, TypeDefinition type, ResultLocation location)
         {
             Name = name;
-            GetValue = new GetValue(this);
             Type = type;
             Location = location;
+            GetValue = new GetValue(this);
         }
 
         public string Name { get; private set; }

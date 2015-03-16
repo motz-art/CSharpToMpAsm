@@ -38,12 +38,15 @@ namespace CSharpToMpAsm.Compiler.Codes
         public void WriteMpAsm(IMpAsmWriter writer, IMemoryManager memManager)
         {
             Left.WriteMpAsm(writer, memManager);
-            _location = memManager.Alloc(ResultType.Size);
 
-            for (int i = 0; i < ResultType.Size; i++)
+            if (Left.Location.IsWorkRegister)
             {
-                writer.MoveFileToW(Left.Location + i);
-                writer.MoveWToFile(_location + i);
+                _location = memManager.Alloc(ResultType.Size);
+                writer.MoveWToFile(_location);
+            }
+            else
+            {
+                _location = Left.Location;
             }
 
             var literal = Right as IntValue;

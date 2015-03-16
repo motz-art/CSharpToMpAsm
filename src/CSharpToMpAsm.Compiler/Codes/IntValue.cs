@@ -3,20 +3,26 @@ using System.Text;
 
 namespace CSharpToMpAsm.Compiler.Codes
 {
-    internal class IntValue : ICode
+    public class IntValue : ICode
     {
-        private static ResultLocation _staticAddress;
         private ResultLocation _address;
+        private TypeDefinition _type;
         public int Value { get; private set; }
 
         public IntValue(int value)
+            : this(value, TypeDefinitions.Int32)
+        {
+        }
+
+        public IntValue(int value, TypeDefinition type)
         {
             Value = value;
+            _type = type;
         }
 
         public TypeDefinition ResultType
         {
-            get { return TypeDefinitions.Int32; }
+            get { return _type; }
         }
 
         public ResultLocation Location
@@ -34,19 +40,18 @@ namespace CSharpToMpAsm.Compiler.Codes
         {
             if (_address == null)
             {
-                if (_staticAddress == null)
-                {
-                    _staticAddress = memManager.Alloc(ResultType.Size);
-                }
-                _address = _staticAddress;
+                _address = ResultType.Size==1 ? ResultLocation.WorkRegister : memManager.Alloc(ResultType.Size);
             }
-            
+
             var bytes = BitConverter.GetBytes(Value);
 
-            writer.Comment(string.Format("; IntLiteral {0}(0x{0:X8}) to 0x{1:X2}.", Value, _address));
+            writer.Comment(string.Format("; IntLiteral {0}(0x{0:X8}) to {1}.", Value, _address));
 
-            for (int i = 0; i < bytes.Length; i++)
+            for (int i = 0; i < ResultType.Size; i++)
             {
+                if (i >= bytes.Length)
+                    throw new InvalidOperationException("Literal value is too small.");
+
                 var b = bytes[i];
                 writer.LoadLiteralToW(b);
                 writer.MoveWToFile(_address + i);
