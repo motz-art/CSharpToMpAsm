@@ -57,5 +57,28 @@ namespace CSharpToMpAsm.Compiler.Codes
                 writer.MoveWToFile(_address + i);
             }
         }
+
+        protected bool Equals(IntValue other)
+        {
+            return Value == other.Value;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((IntValue) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return Value;
+        }
+
+        public bool Equals(ICode other)
+        {
+            return Equals((object)other);
+        }
     }
 }

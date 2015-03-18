@@ -46,12 +46,12 @@ namespace Demo
 
         public byte SWAPFW(byte value)
         {
-            return (byte) (((value & 0x0F) << 4) | ((value & 0xF0) >> 4));
+            return (byte)(((value << 4) & 0xF0) | ((value >> 4) & 0x0F));
         }
 
         public void SWAPF(ref byte value)
         {
-            value = (byte)(((value & 0x0F) << 4) | ((value & 0xF0) >> 4));
+            value = (byte)(((value << 4) & 0xF0) | ((value >> 4) & 0x0F));
         }
 
         protected abstract void DoWork();

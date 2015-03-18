@@ -2,7 +2,7 @@ using System;
 
 namespace CSharpToMpAsm.Compiler.Codes
 {
-    internal class NullCode : ICode
+    public class NullCode : ICode
     {
         public TypeDefinition ResultType
         {
@@ -16,6 +16,11 @@ namespace CSharpToMpAsm.Compiler.Codes
 
         public void WriteMpAsm(IMpAsmWriter writer, IMemoryManager memManager)
         {
+        }
+
+        public bool Equals(ICode other)
+        {
+            return other is NullCode;
         }
     }
 }

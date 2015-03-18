@@ -55,5 +55,33 @@ namespace CSharpToMpAsm.Compiler.Codes
             }
             writer.Return();
         }
+
+        protected bool Equals(ReturnCode other)
+        {
+            return Equals(Value, other.Value) && Equals(Method, other.Method);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((ReturnCode) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return ((Value != null ? Value.GetHashCode() : 0)*397) ^ (Method != null ? Method.GetHashCode() : 0);
+            }
+        }
+
+        public bool Equals(ICode other)
+        {
+            var returnCode = other as ReturnCode;
+            if (returnCode == null) return false;
+            return Equals(returnCode);
+        }
     }
 }

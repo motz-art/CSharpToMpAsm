@@ -101,6 +101,12 @@ namespace CSharpToMpAsm.Compiler
 
         public void Dispose(ResultLocation location, int size)
         {
+            if (location.IsWorkRegister)
+            {
+                if (size!=1) throw new InvalidOperationException("Working register should only containe single byte of data.");
+                return;
+            }
+
             var address = location.Address;
 
             if (!AllIs(address, size, AddressState.Allocated))

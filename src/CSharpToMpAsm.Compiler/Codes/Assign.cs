@@ -3,7 +3,7 @@ using System.Text;
 
 namespace CSharpToMpAsm.Compiler.Codes
 {
-    internal class Assign : ICode
+    public class Assign : ICode
     {
         public IValueDestination Destination { get; set; }
         public ICode Code { get; set; }
@@ -58,6 +58,32 @@ namespace CSharpToMpAsm.Compiler.Codes
             }
             if (!(Code is Call) && !(Code is GetReference))
                 memManager.Dispose(Code.Location, Code.ResultType.Size);
+        }
+
+        public bool Equals(ICode other)
+        {
+            return Equals((object)other);
+        }
+
+        protected bool Equals(Assign other)
+        {
+            return Equals(Code, other.Code) && Equals(Destination, other.Destination);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((Assign) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return ((Code != null ? Code.GetHashCode() : 0)*397) ^ (Destination != null ? Destination.GetHashCode() : 0);
+            }
         }
     }
 }

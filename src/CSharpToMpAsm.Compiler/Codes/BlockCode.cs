@@ -1,9 +1,8 @@
 using System;
-using System.Text;
 
 namespace CSharpToMpAsm.Compiler.Codes
 {
-    internal class BlockCode : ICode
+    public class BlockCode : ICode
     {
         public ICode[] Codes { get; private set; }
 
@@ -28,6 +27,43 @@ namespace CSharpToMpAsm.Compiler.Codes
             {
                 code.WriteMpAsm(writer, memManager);
             }
+        }
+
+        protected bool Equals(BlockCode other)
+        {
+            if (Codes.Length != other.Codes.Length) return false;
+
+            for (int i = 0; i < Codes.Length; i++)
+            {
+                if (!Codes[i].Equals(other.Codes[i])) return false;
+            }
+            return true;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            return Equals((BlockCode)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hash = Codes.Length.GetHashCode();
+                foreach (var code in Codes)
+                {
+                    hash = hash * 397 ^ code.GetHashCode();
+                }
+                return hash;
+            }
+        }
+
+        public bool Equals(ICode other)
+        {
+            return Equals((object)other);
         }
     }
 }

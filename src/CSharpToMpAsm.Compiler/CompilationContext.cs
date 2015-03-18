@@ -281,10 +281,15 @@ namespace CSharpToMpAsm.Compiler
 
             foreach (var method in methods)
             {
+                method.Body = method.Body.Optimize();
+                var operationsCount = new OperationsCountVisitor().Visit(method.Body);
+            }
+
+            foreach (var method in methods)
+            {
                 writer.WriteLabel(method.Label);
 
-                var optimized = method.Body.Optimize();
-                optimized.WriteMpAsm(writer, memManager);
+                method.Body.WriteMpAsm(writer, memManager);
 
                 if (method.ReturnType == TypeDefinitions.Void)
                 writer.Return();

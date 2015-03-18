@@ -4,15 +4,15 @@ namespace CSharpToMpAsm.Compiler.Codes
 {
     public class AddInts : ICode
     {
-        private readonly ICode _left;
-        private readonly ICode _right;
+        public ICode Left { get; private set; }
+        public ICode Right { get; private set; }
         private static ResultLocation _staticAddress;
         private ResultLocation _address;
 
         public AddInts(ICode left, ICode right)
         {
-            _left = left;
-            _right = right;
+            Left = left;
+            Right = right;
         }
 
         public TypeDefinition ResultType
@@ -47,6 +47,34 @@ namespace CSharpToMpAsm.Compiler.Codes
         public void Optimize()
         {
             
+        }
+
+        protected bool Equals(AddInts other)
+        {
+            return Equals(Left, other.Left) && Equals(Right, other.Right);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((AddInts) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return ((Left != null ? Left.GetHashCode() : 0)*397) ^ (Right != null ? Right.GetHashCode() : 0);
+            }
+        }
+
+        public bool Equals(ICode other)
+        {
+            var add = other as AddInts;
+            if (add == null) return false;
+            return Equals(add);
         }
     }
 }

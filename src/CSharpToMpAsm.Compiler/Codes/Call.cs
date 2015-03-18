@@ -3,7 +3,7 @@ using System.Text;
 
 namespace CSharpToMpAsm.Compiler.Codes
 {
-    internal class Call : ICode
+    public class Call : ICode
     {
         public MethodDefinition Method { get; private set; }
         public ICode[] Args { get; private set; }
@@ -54,6 +54,37 @@ namespace CSharpToMpAsm.Compiler.Codes
             }
 
             writer.Call(Method.Label);
+        }
+
+        public bool Equals(ICode other)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected bool Equals(Call other)
+        {
+            if (Args.Length != other.Args.Length) return false;
+            for (int i = 0; i < Args.Length; i++)
+            {
+                if (!Args[i].Equals(other.Args[i])) return false;
+            }
+            return Equals(Method, other.Method);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((Call) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return ((Method != null ? Method.GetHashCode() : 0)*397) ^ (Args != null ? Args.GetHashCode() : 0);
+            }
         }
     }
 }
