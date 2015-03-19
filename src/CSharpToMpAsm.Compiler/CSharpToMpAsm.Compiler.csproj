@@ -86,6 +86,7 @@
     <Compile Include="Codes\GetReference.cs" />
     <Compile Include="Codes\GetValue.cs" />
     <Compile Include="Codes\ICode.cs" />
+    <Compile Include="Codes\InlineMethodVisitor.cs" />
     <Compile Include="Codes\IntValue.cs" />
     <Compile Include="Codes\LabelCode.cs" />
     <Compile Include="Codes\NullCode.cs" />

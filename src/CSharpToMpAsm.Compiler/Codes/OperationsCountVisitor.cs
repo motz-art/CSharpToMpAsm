@@ -7,6 +7,18 @@ namespace CSharpToMpAsm.Compiler.Codes
         public int Count { get; private set; }
         public bool HasBranhes { get; set; }
 
+        protected override ICode Optimize(SwapfCode swapf)
+        {
+            Count++;
+            return base.Optimize(swapf);
+        }
+
+        protected override ICode Optimize(AddInts addInts)
+        {
+            Count += addInts.ResultType.Size;
+            return base.Optimize(addInts);
+        }
+
         protected override ICode Optimize(BitwiseAnd bitwiseAnd)
         {
             Count++;

@@ -279,13 +279,34 @@ namespace CSharpToMpAsm.Compiler
                 }
             }
 
-            foreach (var method in methods)
+            var changes = true;
+            while (changes)
             {
-                method.Body = method.Body.Optimize();
-                var operationsCount = new OperationsCountVisitor().Visit(method.Body);
+                changes = false;
+                foreach (var method in methods)
+                {
+                    var newBody = method.Body.Optimize();
+                    newBody = new InlineMethodVisitor(method).Visit(newBody);
+                    if (!ReferenceEquals(newBody, method.Body))
+                    {
+                        changes = true;
+                        method.Body = newBody;
+                    }
+
+                    if (!method.ShouldInline)
+                    {
+                        var operationsCountVisitor = new OperationsCountVisitor();
+                        operationsCountVisitor.Visit(method.Body);
+                        if (operationsCountVisitor.Count < 3 && !operationsCountVisitor.HasBranhes)
+                        {
+                            changes = true;
+                            method.ShouldInline = true;
+                        }
+                    }
+                }
             }
 
-            foreach (var method in methods)
+            foreach (var method in methods.Where(x=>!x.ShouldInline))
             {
                 writer.WriteLabel(method.Label);
 

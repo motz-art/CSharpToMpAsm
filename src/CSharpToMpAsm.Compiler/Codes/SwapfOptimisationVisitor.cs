@@ -1,3 +1,5 @@
+using System;
+
 namespace CSharpToMpAsm.Compiler.Codes
 {
     public class SwapfOptimisationVisitor : CodeOptimisationVisitor
@@ -22,6 +24,8 @@ namespace CSharpToMpAsm.Compiler.Codes
             {
                 if ((leftValue & rightValue) == 0 && leftParameter.Equals(rightParameter))
                 {
+                    if ((leftValue | rightValue) != 0xFF) throw new NotImplementedException();
+
                     return new SwapfCode(leftParameter);
                 }
             }

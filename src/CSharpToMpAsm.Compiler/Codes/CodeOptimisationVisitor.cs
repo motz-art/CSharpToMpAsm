@@ -158,8 +158,9 @@ namespace CSharpToMpAsm.Compiler.Codes
                     if (!ReferenceEquals(codes[i], blockCode.Codes[i]))
                         return new BlockCode(codes);
                 }
+                return blockCode;
             }
-            return blockCode;            
+            return new BlockCode(codes);
         }
 
         protected virtual ICode Optimize(Assign assign)

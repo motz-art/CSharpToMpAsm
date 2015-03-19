@@ -27,6 +27,8 @@ namespace CSharpToMpAsm.Compiler
 
         public string Name { get; set; }
 
+        public bool ShouldInline { get; set; }
+
         public ICode GenerateIl(ICode[] args)
         {
             return new Call(this, args);
