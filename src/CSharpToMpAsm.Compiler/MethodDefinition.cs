@@ -33,9 +33,5 @@ namespace CSharpToMpAsm.Compiler
         {
             return new Call(this, args);
         }
-
-        public void Optimize()
-        {
-        }
     }
 }

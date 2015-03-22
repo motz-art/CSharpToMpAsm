@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -83,14 +84,20 @@
     <Compile Include="Codes\CastCodeOptimisationVisitor.cs" />
     <Compile Include="Codes\CodeOptimisationVisitor.cs" />
     <Compile Include="Codes\CodeOptimizationExtentions.cs" />
+    <Compile Include="Codes\CommonCodes.cs" />
+    <Compile Include="Codes\EqualityCode.cs" />
     <Compile Include="Codes\GetReference.cs" />
     <Compile Include="Codes\GetValue.cs" />
     <Compile Include="Codes\ICode.cs" />
+    <Compile Include="Codes\IfElseCode.cs" />
     <Compile Include="Codes\InlineMethodVisitor.cs" />
     <Compile Include="Codes\IntValue.cs" />
     <Compile Include="Codes\LabelCode.cs" />
     <Compile Include="Codes\NullCode.cs" />
     <Compile Include="Codes\OperationsCountVisitor.cs" />
+    <Compile Include="Codes\PostDecrementCode.cs" />
+    <Compile Include="Codes\PostIncrementCode.cs" />
+    <Compile Include="Codes\RemapMethodCallVisitor.cs" />
     <Compile Include="Codes\ResultLocation.cs" />
     <Compile Include="Codes\ReturnCode.cs" />
     <Compile Include="Codes\ShiftBase.cs" />

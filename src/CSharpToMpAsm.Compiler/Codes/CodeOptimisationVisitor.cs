@@ -41,7 +41,49 @@ namespace CSharpToMpAsm.Compiler.Codes
             if (addInts != null) return Optimize(addInts);
             var swapf = code as SwapfCode;
             if (swapf!=null) return Optimize(swapf);
+            var postDecrement = code as PostDecrementCode;
+            if (postDecrement != null) return Optimize(postDecrement);
+            var postIncrement = code as PostIncrementCode;
+            if (postIncrement != null) return Optimize(postIncrement);
+            var ifElseCode = code as IfElseCode;
+            if (ifElseCode != null) return Optimize(ifElseCode);
+            var equalityCode = code as EqualityCode;
+            if (equalityCode != null) return Optimize(equalityCode);
             throw new NotImplementedException();
+        }
+
+        private ICode Optimize(EqualityCode equalityCode)
+        {
+            var left = Visit(equalityCode.Left);
+            var right = Visit(equalityCode.Right);
+            if (ReferenceEquals(left, equalityCode.Left)
+                && ReferenceEquals(right, equalityCode.Right))
+                return equalityCode;
+            return new EqualityCode(left, right);
+        }
+
+        private ICode Optimize(IfElseCode ifElseCode)
+        {
+            var condition = Visit(ifElseCode.Condition);
+            var trueCode = Visit(ifElseCode.TrueCode);
+            var falseCode = Visit(ifElseCode.FalseCode);
+
+            if (ReferenceEquals(condition, ifElseCode.Condition)
+                && ReferenceEquals(trueCode, ifElseCode.TrueCode)
+                && ReferenceEquals(falseCode, ifElseCode.FalseCode))
+                return ifElseCode;
+
+            return new IfElseCode(condition, trueCode, falseCode);
+        }
+
+        protected virtual ICode Optimize(PostIncrementCode postIncrement)
+        {
+            return postIncrement;
+        }
+
+        protected virtual ICode Optimize(PostDecrementCode postDecrement)
+        {
+            return postDecrement;
         }
 
         protected virtual ICode Optimize(SwapfCode swapf)

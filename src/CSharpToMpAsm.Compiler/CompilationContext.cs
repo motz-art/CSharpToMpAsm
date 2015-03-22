@@ -169,7 +169,7 @@ namespace CSharpToMpAsm.Compiler
             var type = ResolveType(propertyDeclaration.ReturnType);
             if (addressAttr == null)
             {
-                MemAllocate(type.Size);
+                address = MemAllocate(type.Size);
             }
             else
             {
@@ -244,13 +244,6 @@ namespace CSharpToMpAsm.Compiler
         public string CompileEntry(TypeDefinition entry)
         {
             var methods = GetAllMethods(entry);
-
-            var entryPoints = methods.Where(x => x.CodeAddress != -1);
-
-            foreach (var entryPoint in entryPoints)
-            {
-                entryPoint.Optimize();
-            }
 
             var stringWriter = new StringWriter();
             IMpAsmWriter writer = new MpAsmTextWriter(stringWriter);
@@ -337,12 +330,23 @@ namespace CSharpToMpAsm.Compiler
                 {
                     if (methods.Contains(method.Overrides))
                     {
+                        RemapVirtualMethodCallsMethods(method, methods);
                         methods.Remove(method.Overrides);
                         i = -1;
                     }
                 }
             }
             return methods;
+        }
+
+        private static void RemapVirtualMethodCallsMethods(MethodDefinition method, List<MethodDefinition> methods)
+        {
+            var visitor = new RemapMethodCallVisitor(method.Overrides, method);
+            foreach (var methodDefinition in methods)
+            {
+                if (methodDefinition.Body!=null)
+                methodDefinition.Body = visitor.Visit(methodDefinition.Body);
+            }
         }
 
         public ResultLocation GetAddress(IValueDestination destination)

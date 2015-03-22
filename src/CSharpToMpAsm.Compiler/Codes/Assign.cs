@@ -10,18 +10,29 @@ namespace CSharpToMpAsm.Compiler.Codes
 
         public Assign(IValueDestination destination, ICode code)
         {
+            if (destination == null) throw new ArgumentNullException("destination");
+            if (code == null) throw new ArgumentNullException("code");
+
             Destination = destination;
             Code = code;
+
+            var destinationType = Dereference(Destination.Type);
+            var codeType = Dereference(Code.ResultType);
+
+            if (destinationType != codeType)
+            {
+                throw new InvalidOperationException("DestinationType do not match expression type.");
+            }
         }
 
         public TypeDefinition ResultType
         {
-            get { throw new NotImplementedException(); }
+            get { return Code.ResultType; }
         }
 
         public ResultLocation Location
         {
-            get { throw new NotImplementedException(); }
+            get { return Code.Location; }
         }
 
         private static TypeDefinition Dereference(TypeDefinition type)
@@ -36,14 +47,6 @@ namespace CSharpToMpAsm.Compiler.Codes
 
         public void WriteMpAsm(IMpAsmWriter writer, IMemoryManager memManager)
         {
-            var destinationType = Dereference(Destination.Type);
-            var codeType = Dereference(Code.ResultType);
-
-            if (destinationType != codeType)
-            {
-                throw new InvalidOperationException("DestinationType do not match expression type.");
-            }
-
             Code.WriteMpAsm(writer, memManager);
 
             writer.Comment(string.Format("; Assign {0} at {1} to {2} ({3})",
@@ -51,13 +54,7 @@ namespace CSharpToMpAsm.Compiler.Codes
                     Code.Location,
                     Destination.Location, Destination.Name));
 
-            for (int i = 0; i < Destination.Type.Size; i++)
-            {
-                writer.MoveFileToW(Code.Location + i);
-                writer.MoveWToFile(Destination.Location + i);
-            }
-            if (!(Code is Call) && !(Code is GetReference))
-                memManager.Dispose(Code.Location, Code.ResultType.Size);
+            writer.Copy(Code.Location, Destination.Location, Destination.Type.Size);
         }
 
         public bool Equals(ICode other)

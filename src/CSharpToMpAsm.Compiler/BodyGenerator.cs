@@ -17,7 +17,7 @@ namespace CSharpToMpAsm.Compiler
         {
             _compilationContext = compilationContext;
         }
-        
+
         public ICode VisitAnonymousMethodExpression(AnonymousMethodExpression anonymousMethodExpression, BodyContext data)
         {
             throw new NotImplementedException();
@@ -51,9 +51,21 @@ namespace CSharpToMpAsm.Compiler
             if (identifier == null) throw new NotImplementedException();
 
             var destination = data.Resolve(identifier.Identifier);
+            var intValue = value as IntValue;
+            if (intValue != null)
+            {
+                if (destination.Type == TypeDefinitions.Byte)
+                {
+                    value = new IntValue(intValue.Value, TypeDefinitions.Byte);
+                }
+                else if (destination.Type == TypeDefinitions.SByte)
+                {
+                    value = new IntValue(intValue.Value, TypeDefinitions.SByte);
+                }
+            }
             return new Assign(destination, value);
         }
-        
+
         public ICode VisitBaseReferenceExpression(BaseReferenceExpression baseReferenceExpression, BodyContext data)
         {
             throw new NotImplementedException();
@@ -65,19 +77,21 @@ namespace CSharpToMpAsm.Compiler
             if (left == null) throw new InvalidOperationException("Code should not be null for left expression.");
             var right = binaryOperatorExpression.Right.AcceptVisitor(this, data);
             if (right == null) throw new InvalidOperationException("Code should not be null for right expression.");
-            
+
             switch (binaryOperatorExpression.Operator)
             {
-                    case BinaryOperatorType.Add:
+                case BinaryOperatorType.Add:
                     return CreateAddOperator(left, right);
-                    case BinaryOperatorType.BitwiseAnd:
+                case BinaryOperatorType.BitwiseAnd:
                     return new BitwiseAnd(left, right);
-                    case BinaryOperatorType.BitwiseOr:
+                case BinaryOperatorType.BitwiseOr:
                     return new BitwiseOr(left, right);
-                    case BinaryOperatorType.ShiftLeft:
+                case BinaryOperatorType.ShiftLeft:
                     return new ShiftLeft(left, right);
-                    case BinaryOperatorType.ShiftRight:
+                case BinaryOperatorType.ShiftRight:
                     return new ShiftRight(left, right);
+                case BinaryOperatorType.Equality:
+                    return new EqualityCode(left, right);
             }
             throw new NotImplementedException();
 
@@ -125,7 +139,7 @@ namespace CSharpToMpAsm.Compiler
                 var code = directionExpression.Expression.AcceptVisitor(this, data);
                 if (code.ResultType.IsReference) return code;
                 var getValue = code as GetValue;
-                if (getValue==null)throw new InvalidOperationException("It is expected that code should be GetValue.");
+                if (getValue == null) throw new InvalidOperationException("It is expected that code should be GetValue.");
                 return new GetReference(getValue.Variable);
             }
 
@@ -240,6 +254,16 @@ namespace CSharpToMpAsm.Compiler
 
         public ICode VisitUnaryOperatorExpression(UnaryOperatorExpression unaryOperatorExpression, BodyContext data)
         {
+            var identifier = unaryOperatorExpression.Expression as IdentifierExpression;
+            if (identifier == null) throw new NotSupportedException();
+            var destination = data.Resolve(identifier.Identifier);
+            switch (unaryOperatorExpression.Operator)
+            {
+                case UnaryOperatorType.PostDecrement:
+                    return new PostDecrementCode(destination);
+                case UnaryOperatorType.PostIncrement:
+                    return new PostIncrementCode(destination);
+            }
             throw new NotImplementedException();
         }
 
@@ -347,8 +371,8 @@ namespace CSharpToMpAsm.Compiler
         private static ICode CreateBlockCode(IEnumerable<ICode> codes)
         {
             var codesList = codes.ToList();
-            
-            if (codesList.Any(code=>code == null)) 
+
+            if (codesList.Any(code => code == null))
                 throw new InvalidOperationException("Code is null.");
 
             if (codesList.Count == 0) return new NullCode();
@@ -419,7 +443,9 @@ namespace CSharpToMpAsm.Compiler
 
         public ICode VisitIfElseStatement(IfElseStatement ifElseStatement, BodyContext data)
         {
-            throw new NotImplementedException();
+            return new IfElseCode(ifElseStatement.Condition.AcceptVisitor(this, data),
+                    ifElseStatement.TrueStatement.AcceptVisitor(this, data),
+                    ifElseStatement.FalseStatement.AcceptVisitor(this, data));
         }
 
         public ICode VisitLabelStatement(LabelStatement labelStatement, BodyContext data)
@@ -486,7 +512,7 @@ namespace CSharpToMpAsm.Compiler
         public ICode VisitVariableDeclarationStatement(VariableDeclarationStatement variableDeclarationStatement, BodyContext data)
         {
             var simpleType = variableDeclarationStatement.Type as SimpleType;
-            if (simpleType!=null && simpleType.Identifier == "var")
+            if (simpleType != null && simpleType.Identifier == "var")
             {
                 _variableType = null;
             }
@@ -497,7 +523,7 @@ namespace CSharpToMpAsm.Compiler
 
             var codes = variableDeclarationStatement.Variables.Select(
                 variableInitializer => variableInitializer.AcceptVisitor(this, data));
-            
+
             return CreateBlockCode(codes);
         }
 
@@ -605,7 +631,7 @@ namespace CSharpToMpAsm.Compiler
             var variable = new Variable(variableInitializer.Name, type, _compilationContext.MemAllocate(type.Size));
             data.AddDestination(variable);
 
-            if (code!=null)
+            if (code != null)
                 return new Assign(variable, code);
 
             return null;
@@ -703,7 +729,7 @@ namespace CSharpToMpAsm.Compiler
 
         public ICode VisitNullNode(AstNode nullNode, BodyContext data)
         {
-            throw new NotImplementedException();
+            return new NullCode();
         }
 
         public ICode VisitErrorNode(AstNode errorNode, BodyContext data)

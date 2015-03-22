@@ -16,7 +16,7 @@ namespace Demo
         [Address(0)]
         public virtual void Start()
         {
-            Startup();
+            Setup();
 
             begin: 
             
@@ -25,7 +25,7 @@ namespace Demo
             goto begin;
         }
 
-        public virtual void Startup() { }
+        public virtual void Setup() { }
 
         [Address(4)]
         protected void _Interrupt(ref byte w)

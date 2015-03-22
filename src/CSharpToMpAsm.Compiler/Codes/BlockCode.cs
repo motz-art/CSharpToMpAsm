@@ -26,6 +26,10 @@ namespace CSharpToMpAsm.Compiler.Codes
             foreach (var code in Codes)
             {
                 code.WriteMpAsm(writer, memManager);
+                if (code.ResultType != TypeDefinitions.Void)
+                {
+                    memManager.Dispose(code.Location, code.ResultType.Size);
+                }
             }
         }
 

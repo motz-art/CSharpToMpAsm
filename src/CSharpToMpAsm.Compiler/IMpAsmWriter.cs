@@ -6,6 +6,7 @@ namespace CSharpToMpAsm.Compiler
 {
     public interface IMpAsmWriter
     {
+        ILabel CreateLabel();
         ILabel CreateLabel(string name);
         ILabel CreateLabel(string name, int codeAddress);
 
@@ -26,6 +27,11 @@ namespace CSharpToMpAsm.Compiler
         void AndWFile(ResultLocation location);
         void ClearFile(ResultLocation location);
         void Swapf(ResultLocation location);
+        void IncrementFile(ResultLocation location);
+        void DecrementFile(ResultLocation location);
+        void MoveFileToFile(ResultLocation location);
+        void BitTestSkipClear(ResultLocation location, int bitNumber);
+        void BitTestSkipSet(ResultLocation location, int bitNumber);
     }
 
     class TextLabel : ILabel
@@ -37,10 +43,17 @@ namespace CSharpToMpAsm.Compiler
     class MpAsmTextWriter : IMpAsmWriter
     {
         private readonly TextWriter _writer;
+        private int _lblCounter = 0;
 
         public MpAsmTextWriter(TextWriter writer)
         {
             _writer = writer;
+        }
+
+        public ILabel CreateLabel()
+        {
+            _lblCounter++;
+            return CreateLabel(String.Format("lbl{0:X8}", _lblCounter));
         }
 
         public ILabel CreateLabel(string name)
@@ -147,6 +160,31 @@ namespace CSharpToMpAsm.Compiler
         public void Swapf(ResultLocation location)
         {
             _writer.WriteLine("\tSWAPF {0},f", location);
+        }
+
+        public void IncrementFile(ResultLocation location)
+        {
+            _writer.WriteLine("\tINCF {0},f", location);
+        }
+
+        public void DecrementFile(ResultLocation location)
+        {
+            _writer.WriteLine("\tDECF {0},f", location);
+        }
+
+        public void MoveFileToFile(ResultLocation location)
+        {
+            _writer.WriteLine("\tMOVF {0},f", location);
+        }
+
+        public void BitTestSkipClear(ResultLocation location, int bitNumber)
+        {
+            _writer.WriteLine("\tBTFSC {0},{1}", location, bitNumber);
+        }
+
+        public void BitTestSkipSet(ResultLocation location, int bitNumber)
+        {
+            _writer.WriteLine("\tBTFSS {0},{1}", location, bitNumber);
         }
 
         public void GoTo(ILabel label)

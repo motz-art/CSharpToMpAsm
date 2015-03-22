@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CSharpToMpAsm.Compiler.Codes
 {
@@ -13,9 +9,9 @@ namespace CSharpToMpAsm.Compiler.Codes
             LabelName = labelName;
         }
 
-        public TypeDefinition ResultType { get; set; }
+        public TypeDefinition ResultType { get { return TypeDefinitions.Void; } }
         public string LabelName { get; set; }
-        public ResultLocation Location { get; set; }
+        public ResultLocation Location { get { throw new InvalidOperationException(); } }
         public ILabel _label;
 
         public void WriteMpAsm(IMpAsmWriter writer, IMemoryManager memManager)
@@ -44,7 +40,7 @@ namespace CSharpToMpAsm.Compiler.Codes
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
-            return Equals((LabelCode) obj);
+            return Equals((LabelCode)obj);
         }
 
         public override int GetHashCode()
