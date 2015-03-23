@@ -13,6 +13,11 @@ namespace CSharpToMpAsm.Compiler.Codes
             Code = code;
         }
 
+        public CastCode(TypeDefinition type, ICode code, ResultLocation location) : this(type, code)
+        {
+            Location = location;
+        }
+
         public TypeDefinition ResultType
         {
             get { return _type; }

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using ICSharpCode.NRefactory.CSharp;
 using ICSharpCode.NRefactory.TypeSystem;
 using CSharpToMpAsm.Compiler.Codes;
@@ -221,14 +220,9 @@ namespace CSharpToMpAsm.Compiler
             var methods = GetAllMethods(entry);
 
             var stringWriter = new StringWriter();
+
+            //ToDo: Check if writer could only be created when actually writing ASM.
             IMpAsmWriter writer = new MpAsmTextWriter(stringWriter);
-
-            var memManager = new MemoryManager(256);
-
-            memManager.SetNotImplemented(0, 256);
-            memManager.SetReserved(0, 0x1f);
-            memManager.SetFree(0x20, 64);
-            memManager.SetReserved(0x80, 0x1f);
 
             foreach (var method in methods)
             {
@@ -272,6 +266,19 @@ namespace CSharpToMpAsm.Compiler
                         }
                     }
                 }
+            }
+
+            var memManager = new MemoryManager(256);
+
+            memManager.SetNotImplemented(0, 256);
+            memManager.SetReserved(0, 0x1f);
+            memManager.SetFree(0x20, 64);
+            memManager.SetReserved(0x80, 0x1f);
+
+            var memoryVisitor = new MemoryPlannerVisitor(memManager);
+            foreach (var method in methods)
+            {
+                method.Body = memoryVisitor.Visit(method.Body);
             }
 
             foreach (var method in methods.Where(x=>!x.ShouldInline))

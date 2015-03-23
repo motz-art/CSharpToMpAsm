@@ -7,6 +7,6 @@ namespace CSharpToMpAsm.Compiler
         string Name { get; }
         ICode GetValue { get; }
         TypeDefinition Type { get; }
-        ResultLocation Location { get; }
+        ResultLocation Location { get; set; }
     }
 }

@@ -30,6 +30,11 @@ namespace CSharpToMpAsm.Compiler.Codes
             Right = right;
         }
 
+        public BitwiseBase(ICode left, ICode right, ResultLocation location) : this(left, right)
+        {
+            Location = location;
+        }
+
         public TypeDefinition ResultType
         {
             get { return Left.ResultType; }

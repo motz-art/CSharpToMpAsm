@@ -27,6 +27,11 @@ namespace CSharpToMpAsm.Compiler.Codes
             ResultType = resultType; 
         }
 
+        protected ShiftBase(ICode left, ICode right, TypeDefinition resultType, ResultLocation location) : this(left, right, resultType)
+        {
+            Location = location;
+        }
+
         public TypeDefinition ResultType { get; private set; }
 
         public ResultLocation Location { get; private set; }

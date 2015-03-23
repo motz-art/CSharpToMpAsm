@@ -16,9 +16,14 @@ namespace CSharpToMpAsm.Compiler.Codes
             ResultType = TypeDefinitions.Reference(value.Type);
         }
 
+        public GetReference(IValueDestination value, ResultLocation location) : this(value)
+        {
+            Location = location;
+        }
+
         public void WriteMpAsm(IMpAsmWriter writer)
         {
-            throw new NotImplementedException();
+            writer.Copy(Value.Location, Location, Value.Type.Size);
         }
 
         protected bool Equals(GetReference other)

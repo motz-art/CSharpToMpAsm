@@ -11,6 +11,12 @@ namespace CSharpToMpAsm.Compiler.Codes
             Destination = destination;
         }
 
+        public PostIncrementCode(IValueDestination destination, ResultLocation location)
+            : this(destination)
+        {
+            Location = location;
+        }
+
         public bool Equals(ICode other)
         {
             throw new NotImplementedException();

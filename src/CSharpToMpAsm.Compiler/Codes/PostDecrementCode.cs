@@ -5,11 +5,16 @@ namespace CSharpToMpAsm.Compiler.Codes
 {
     public class PostDecrementCode : ICode
     {
-        private readonly IValueDestination _destination;
+        public IValueDestination Destination { get; private set; }
 
         public PostDecrementCode(IValueDestination destination)
         {
-            _destination = destination;
+            Destination = destination;
+        }
+
+        public PostDecrementCode(IValueDestination destination, ResultLocation location) : this(destination)
+        {
+            Location = location;
         }
 
         public bool Equals(ICode other)
@@ -19,18 +24,19 @@ namespace CSharpToMpAsm.Compiler.Codes
 
         public TypeDefinition ResultType
         {
-            get { return _destination.Type; }
+            get { return Destination.Type; }
         }
 
         public ResultLocation Location { get; private set; }
 
         public void WriteMpAsm(IMpAsmWriter writer)
         {
-            writer.Copy(_destination.Location, Location, ResultType.Size);
+            writer.Copy(Destination.Location, Location, ResultType.Size);
 
             if (ResultType == TypeDefinitions.Byte)
             {
-                writer.DecrementFile(_destination.Location);
+                writer.DecrementFile(Destination.Location);
+                return;
             }
             throw new NotImplementedException();
         }

@@ -10,6 +10,10 @@ namespace CSharpToMpAsm.Compiler.Codes
         {
         }
 
+        public ShiftLeft(ICode left, ICode right, TypeDefinition resultType, ResultLocation location) : base(left, right, resultType, location)
+        {
+        }
+
         protected override void RotateOnce(IMpAsmWriter writer)
         {
             for (int j = 0; j < ResultType.Size; j++)

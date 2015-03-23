@@ -16,6 +16,11 @@ namespace CSharpToMpAsm.Compiler.Codes
             Value = value;
         }
 
+        public SwapfCode(ICode value, ResultLocation location) : this(value)
+        {
+            Location = location;
+        }
+
         public void WriteMpAsm(IMpAsmWriter writer)
         {
             Value.WriteMpAsm(writer);

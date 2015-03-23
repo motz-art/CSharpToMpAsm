@@ -1,10 +1,12 @@
-using System;
-
 namespace CSharpToMpAsm.Compiler.Codes
 {
     public class BitwiseAnd : BitwiseBase
     {
         public BitwiseAnd(ICode left, ICode right) : base(left, right)
+        {
+        }
+
+        public BitwiseAnd(ICode left, ICode right, ResultLocation location) : base(left, right, location)
         {
         }
 

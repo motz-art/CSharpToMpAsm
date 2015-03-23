@@ -16,6 +16,11 @@ namespace CSharpToMpAsm.Compiler.Codes
             ResultType = toType.IsReference ? toType.TypeParameters[0] : toType;
         }
 
+        public GetValue(IValueDestination variable, TypeDefinition resultType, ResultLocation location) : this(variable, resultType)
+        {
+            Location = location;
+        }
+
         public void WriteMpAsm(IMpAsmWriter writer)
         {
             writer.Comment(string.Format("; {0} ({1})", Variable.Location, Variable.Name));

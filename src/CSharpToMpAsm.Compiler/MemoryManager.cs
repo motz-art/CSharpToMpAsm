@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using CSharpToMpAsm.Compiler.Codes;
 
@@ -15,6 +16,7 @@ namespace CSharpToMpAsm.Compiler
 
         }
         private readonly AddressState[] _memoryMap;
+        private readonly Dictionary<IValueDestination, ResultLocation> _locations = new Dictionary<IValueDestination, ResultLocation>();
 
         public MemoryManager(int totalSize)
         {
@@ -60,7 +62,7 @@ namespace CSharpToMpAsm.Compiler
                     return new ResultLocation(i);
                 }
             }
-            
+
             throw new InvalidOperationException("Out of memory.");
         }
 
@@ -72,9 +74,9 @@ namespace CSharpToMpAsm.Compiler
             if (size <= 0)
                 throw new ArgumentException("size should be greater than 0.");
 
-            if (address+size > _memoryMap.Length)
-                throw  new ArgumentException("address + size should be less then total memory size.");
-            
+            if (address + size > _memoryMap.Length)
+                throw new ArgumentException("address + size should be less then total memory size.");
+
             for (int i = address; i < address + size; i++)
             {
                 _memoryMap[i] = state;
@@ -103,7 +105,7 @@ namespace CSharpToMpAsm.Compiler
         {
             if (location.IsWorkRegister)
             {
-                if (size!=1) throw new InvalidOperationException("Working register should only containe single byte of data.");
+                if (size != 1) throw new InvalidOperationException("Working register should only containe single byte of data.");
                 return;
             }
 
@@ -119,7 +121,13 @@ namespace CSharpToMpAsm.Compiler
 
         public ResultLocation Alloc(IValueDestination destination)
         {
-            return destination.Location;
+            var location = destination.Location;
+            if (location == null && !_locations.TryGetValue(destination, out location))
+            {
+                location = Alloc(destination.Type.Size);
+                _locations.Add(destination, location);
+            }
+            return location;
         }
 
         public void DAlloc(IValueDestination destination)

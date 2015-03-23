@@ -14,6 +14,11 @@ namespace CSharpToMpAsm.Compiler.Codes
             ResultType = TypeDefinitions.Int32;
         }
 
+        public AddInts(ICode left, ICode right, ResultLocation location) : this(left, right)
+        {
+            Location = location;
+        }
+
         public TypeDefinition ResultType { get; private set; }
 
         public ResultLocation Location { get; private set; }

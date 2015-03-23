@@ -93,6 +93,7 @@
     <Compile Include="Codes\InlineMethodVisitor.cs" />
     <Compile Include="Codes\IntValue.cs" />
     <Compile Include="Codes\LabelCode.cs" />
+    <Compile Include="Codes\MemoryPlannerVisitor.cs" />
     <Compile Include="Codes\NullCode.cs" />
     <Compile Include="Codes\OperationsCountVisitor.cs" />
     <Compile Include="Codes\PostDecrementCode.cs" />

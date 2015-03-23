@@ -17,6 +17,11 @@ namespace CSharpToMpAsm.Compiler.Codes
             ResultType = type;
         }
 
+        public IntValue(int value, TypeDefinition type, ResultLocation location) : this(value, type)
+        {
+            Location = location;
+        }
+
         public TypeDefinition ResultType { get; private set; }
 
         public ResultLocation Location { get; private set; }
