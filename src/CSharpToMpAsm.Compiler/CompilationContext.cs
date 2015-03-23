@@ -278,7 +278,7 @@ namespace CSharpToMpAsm.Compiler
             {
                 writer.WriteLabel(method.Label);
 
-                method.Body.WriteMpAsm(writer, memManager);
+                method.Body.WriteMpAsm(writer);
 
                 if (method.ReturnType == TypeDefinitions.Void)
                 writer.Return();

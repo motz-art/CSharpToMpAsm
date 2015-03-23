@@ -58,7 +58,7 @@ namespace CSharpToMpAsm.Compiler.Codes
             get { throw new InvalidOperationException(); }
         }
 
-        public void WriteMpAsm(IMpAsmWriter writer, IMemoryManager memManager)
+        public void WriteMpAsm(IMpAsmWriter writer)
         {
             var equality = Condition as EqualityCode;
             if (equality != null)
@@ -66,29 +66,29 @@ namespace CSharpToMpAsm.Compiler.Codes
                 var value = equality.Left as IntValue;
                 if (value != null)
                 {
-                    WriteWithConstantValue(equality.Right, value, writer, memManager);
+                    WriteWithConstantValue(equality.Right, value, writer);
                     return;
                 }
                 value = equality.Right as IntValue;
                 if (value != null)
                 {
-                    WriteWithConstantValue(equality.Left, value, writer, memManager);
+                    WriteWithConstantValue(equality.Left, value, writer);
                     return;
                 }
                 throw new NotImplementedException();
 
             }
-            Condition.WriteMpAsm(writer, memManager);
+            Condition.WriteMpAsm(writer);
             throw new NotImplementedException();
         }
 
-        private void WriteWithConstantValue(ICode right, IntValue value, IMpAsmWriter writer, IMemoryManager memManager)
+        private void WriteWithConstantValue(ICode right, IntValue value, IMpAsmWriter writer)
         {
             if (value.Value == 0)
             {
                 if (right.ResultType == TypeDefinitions.Byte)
                 {
-                    right.WriteMpAsm(writer, memManager);
+                    right.WriteMpAsm(writer);
                     if (right.Location.IsWorkRegister)
                     {
                         throw new NotImplementedException();
@@ -96,14 +96,13 @@ namespace CSharpToMpAsm.Compiler.Codes
                     else
                     {
                         writer.MoveFileToFile(right.Location);
-                        memManager.Dispose(right.Location, right.ResultType.Size);
                         writer.BitTestSkipSet(CommonCodes.Status, CommonCodes.StatusZ);
                         
                         if (FalseCode is NullCode)
                         {
                             var ifEndLabl = writer.CreateLabel();
                             writer.GoTo(ifEndLabl);
-                            TrueCode.WriteMpAsm(writer,memManager);
+                            TrueCode.WriteMpAsm(writer);
                             writer.WriteLabel(ifEndLabl);
                         }
                         else
@@ -113,12 +112,12 @@ namespace CSharpToMpAsm.Compiler.Codes
 
                             writer.GoTo(falseLabl);
                             
-                            TrueCode.WriteMpAsm(writer, memManager);
+                            TrueCode.WriteMpAsm(writer);
                             
                             writer.GoTo(ifEndLabl);
                             writer.WriteLabel(falseLabl);
                             
-                            FalseCode.WriteMpAsm(writer, memManager);
+                            FalseCode.WriteMpAsm(writer);
                             
                             writer.WriteLabel(ifEndLabl);                            
                         }

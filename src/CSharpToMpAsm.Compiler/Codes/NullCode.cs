@@ -14,7 +14,7 @@ namespace CSharpToMpAsm.Compiler.Codes
             get { throw new InvalidOperationException("Void result type does not have location."); }
         }
 
-        public void WriteMpAsm(IMpAsmWriter writer, IMemoryManager memManager)
+        public void WriteMpAsm(IMpAsmWriter writer)
         {
         }
 

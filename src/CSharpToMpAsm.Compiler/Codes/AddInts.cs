@@ -6,42 +6,21 @@ namespace CSharpToMpAsm.Compiler.Codes
     {
         public ICode Left { get; private set; }
         public ICode Right { get; private set; }
-        private static ResultLocation _staticAddress;
-        private ResultLocation _address;
 
         public AddInts(ICode left, ICode right)
         {
             Left = left;
             Right = right;
+            ResultType = TypeDefinitions.Int32;
         }
 
-        public TypeDefinition ResultType
+        public TypeDefinition ResultType { get; private set; }
+
+        public ResultLocation Location { get; private set; }
+
+        public void WriteMpAsm(IMpAsmWriter writer)
         {
-            get { return TypeDefinitions.Int32; }
-        }
-
-        public ResultLocation Location
-        {
-            get {
-                if (_address == null)
-                    throw new InvalidOperationException("GetMpAsm should be called first.");
-
-                return _address;
-            }
-        }
-
-        public void WriteMpAsm(IMpAsmWriter writer, IMemoryManager memManager)
-        {
-            if (_address == null)
-            {
-                if (_staticAddress == null)
-                {
-                    _staticAddress = memManager.Alloc(ResultType.Size);
-                }
-                _address = _staticAddress;
-            }
-
-            writer.Comment("\tADD A, B");
+            throw new NotImplementedException();
         }
 
         public void Optimize()

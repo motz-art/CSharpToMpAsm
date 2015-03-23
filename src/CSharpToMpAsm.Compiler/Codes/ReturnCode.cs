@@ -25,7 +25,7 @@ namespace CSharpToMpAsm.Compiler.Codes
             Value = value;
         }
 
-        public void WriteMpAsm(IMpAsmWriter writer, IMemoryManager memManager)
+        public void WriteMpAsm(IMpAsmWriter writer)
         {
             if (Value != null && Value.ResultType != TypeDefinitions.Void)
             {
@@ -43,15 +43,13 @@ namespace CSharpToMpAsm.Compiler.Codes
                         writer.Return((byte)literal.Value);
                     }
                 }
-                Value.WriteMpAsm(writer, memManager);
+                Value.WriteMpAsm(writer);
 
                 for (int i = 0; i < ResultType.Size; i++)
                 {
                     writer.MoveFileToW(Value.Location + i);
                     writer.MoveWToFile(Method.ReturnValueLocation + i);
                 }
-
-                memManager.Dispose(Value.Location, Value.ResultType.Size);
             }
             writer.Return();
         }

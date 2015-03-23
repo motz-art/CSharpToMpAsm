@@ -16,18 +16,10 @@ namespace CSharpToMpAsm.Compiler.Codes
             Value = value;
         }
 
-        public void WriteMpAsm(IMpAsmWriter writer, IMemoryManager memManager)
+        public void WriteMpAsm(IMpAsmWriter writer)
         {
-            Value.WriteMpAsm(writer, memManager);
-            if (Value.Location.IsWorkRegister)
-            {
-                Location = memManager.Alloc(ResultType.Size);
-                writer.MoveWToFile(Location);
-            }
-            else
-            {
-                Location = Value.Location;
-            }
+            Value.WriteMpAsm(writer);
+            writer.Copy(Value.Location,Location,ResultType.Size);
             writer.Swapf(Location);
         }
 

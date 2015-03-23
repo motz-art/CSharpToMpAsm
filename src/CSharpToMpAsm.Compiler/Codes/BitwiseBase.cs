@@ -7,8 +7,6 @@ namespace CSharpToMpAsm.Compiler.Codes
         public ICode Left { get; private set; }
         public ICode Right { get; private set; }
 
-        private ResultLocation _location;
-
         public BitwiseBase(ICode left, ICode right)
         {
             if (left == null) throw new ArgumentNullException("left");
@@ -37,39 +35,27 @@ namespace CSharpToMpAsm.Compiler.Codes
             get { return Left.ResultType; }
         }
 
-        public ResultLocation Location
+        public ResultLocation Location { get; private set; }
+
+        public void WriteMpAsm(IMpAsmWriter writer)
         {
-            get { return _location; }
-        }
+            Left.WriteMpAsm(writer);
 
-        public void WriteMpAsm(IMpAsmWriter writer, IMemoryManager memManager)
-        {
-            Left.WriteMpAsm(writer, memManager);
-
-            if (Left.Location.IsWorkRegister)
-            {
-                _location = memManager.Alloc(ResultType.Size);
-                writer.MoveWToFile(_location);
-            }
-            else
-            {
-                _location = Left.Location;
-            }
-
-            Right.WriteMpAsm(writer, memManager);
+            writer.Copy(Left.Location, Location, ResultType.Size);
+            
+            Right.WriteMpAsm(writer);
             
             if (Right.Location.IsWorkRegister)
             {
-                WriteBitwiseOperation(writer, _location);
+                WriteBitwiseOperation(writer, Location);
             }
             else
             {
                 for (int i = 0; i < ResultType.Size; i++)
                 {
                     writer.MoveFileToW(Right.Location + i);
-                    WriteBitwiseOperation(writer, _location + i);
+                    WriteBitwiseOperation(writer, Location + i);
                 }
-                memManager.Dispose(Right.Location, Right.ResultType.Size);
             }
         }
 

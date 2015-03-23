@@ -31,7 +31,7 @@ namespace CSharpToMpAsm.Compiler.Codes
             get { throw new NotImplementedException(); }
         }
 
-        public void WriteMpAsm(IMpAsmWriter writer, IMemoryManager memManager)
+        public void WriteMpAsm(IMpAsmWriter writer)
         {
             throw new NotImplementedException();
         }

@@ -45,9 +45,9 @@ namespace CSharpToMpAsm.Compiler.Codes
             return type.TypeParameters[0];
         }
 
-        public void WriteMpAsm(IMpAsmWriter writer, IMemoryManager memManager)
+        public void WriteMpAsm(IMpAsmWriter writer)
         {
-            Code.WriteMpAsm(writer, memManager);
+            Code.WriteMpAsm(writer);
 
             writer.Comment(string.Format("; Assign {0} at {1} to {2} ({3})",
                     Code.ResultType,

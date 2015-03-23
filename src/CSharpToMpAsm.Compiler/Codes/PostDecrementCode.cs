@@ -24,16 +24,15 @@ namespace CSharpToMpAsm.Compiler.Codes
 
         public ResultLocation Location { get; private set; }
 
-        public void WriteMpAsm(IMpAsmWriter writer, IMemoryManager memManager)
+        public void WriteMpAsm(IMpAsmWriter writer)
         {
-            Location = memManager.Alloc(ResultType.Size);
             writer.Copy(_destination.Location, Location, ResultType.Size);
 
             if (ResultType == TypeDefinitions.Byte)
             {
                 writer.DecrementFile(_destination.Location);
             }
-
+            throw new NotImplementedException();
         }
     }
 }

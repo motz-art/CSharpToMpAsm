@@ -23,10 +23,9 @@ namespace CSharpToMpAsm.Compiler.Codes
 
         public ResultLocation Location { get; private set; }
 
-        public void WriteMpAsm(IMpAsmWriter writer, IMemoryManager memManager)
+        public void WriteMpAsm(IMpAsmWriter writer)
         {
-            Location = memManager.Alloc(ResultType.Size);
-            CommonCodes.Copy(writer, Destination.Location, Location, ResultType.Size);
+            writer.Copy(Destination.Location, Location, ResultType.Size);
             if (ResultType == TypeDefinitions.Byte)
             {
                 writer.IncrementFile(Destination.Location);

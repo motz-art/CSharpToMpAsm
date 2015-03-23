@@ -6,6 +6,6 @@ namespace CSharpToMpAsm.Compiler.Codes
     {
         TypeDefinition ResultType { get; }
         ResultLocation Location { get; }
-        void WriteMpAsm(IMpAsmWriter writer, IMemoryManager memManager);
+        void WriteMpAsm(IMpAsmWriter writer);
     }
 }

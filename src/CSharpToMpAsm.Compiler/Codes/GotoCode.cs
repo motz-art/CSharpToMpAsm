@@ -24,7 +24,7 @@ namespace CSharpToMpAsm.Compiler.Codes
             _label = label;
         }
         
-        public void WriteMpAsm(IMpAsmWriter writer, IMemoryManager memManager)
+        public void WriteMpAsm(IMpAsmWriter writer)
         {
             writer.GoTo(_label.GetLabel(writer));
         }

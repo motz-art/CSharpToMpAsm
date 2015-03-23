@@ -14,7 +14,7 @@ namespace CSharpToMpAsm.Compiler.Codes
         public ResultLocation Location { get { throw new InvalidOperationException(); } }
         public ILabel _label;
 
-        public void WriteMpAsm(IMpAsmWriter writer, IMemoryManager memManager)
+        public void WriteMpAsm(IMpAsmWriter writer)
         {
             _label = GetLabel(writer);
             writer.WriteLabel(_label);

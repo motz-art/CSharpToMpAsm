@@ -21,15 +21,11 @@ namespace CSharpToMpAsm.Compiler.Codes
             get { throw new InvalidOperationException("BlobkCode has Void result type."); }
         }
 
-        public void WriteMpAsm(IMpAsmWriter writer, IMemoryManager memManager)
+        public void WriteMpAsm(IMpAsmWriter writer)
         {
             foreach (var code in Codes)
             {
-                code.WriteMpAsm(writer, memManager);
-                if (code.ResultType != TypeDefinitions.Void)
-                {
-                    memManager.Dispose(code.Location, code.ResultType.Size);
-                }
+                code.WriteMpAsm(writer);
             }
         }
 

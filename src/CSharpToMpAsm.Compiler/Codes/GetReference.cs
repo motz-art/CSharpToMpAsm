@@ -16,10 +16,9 @@ namespace CSharpToMpAsm.Compiler.Codes
             ResultType = TypeDefinitions.Reference(value.Type);
         }
 
-        public void WriteMpAsm(IMpAsmWriter writer, IMemoryManager memManager)
+        public void WriteMpAsm(IMpAsmWriter writer)
         {
-            Location = memManager.Alloc(Value.Type.Size);
-            writer.Comment("; Taking references is not implemented.");
+            throw new NotImplementedException();
         }
 
         protected bool Equals(GetReference other)

@@ -1,5 +1,4 @@
 using System;
-using System.Text;
 
 namespace CSharpToMpAsm.Compiler.Codes
 {
@@ -27,7 +26,7 @@ namespace CSharpToMpAsm.Compiler.Codes
             get { return Method.ReturnValueLocation; }
         }
 
-        public void WriteMpAsm(IMpAsmWriter writer, IMemoryManager memManager)
+        public void WriteMpAsm(IMpAsmWriter writer)
         {
             if (Args.Length != Method.Parameters.Length)
                 throw new InvalidOperationException("Method parameters count do not match actually supplied.");
@@ -43,16 +42,10 @@ namespace CSharpToMpAsm.Compiler.Codes
                     }
                     code = new Assign(Method.Parameters[i], code);
 
-                    code.WriteMpAsm(writer, memManager);
+                    code.WriteMpAsm(writer);
                 }
             }
-
-            if (ResultType != TypeDefinitions.Void && Method.ReturnValueLocation == null)
-            {
-                var location = memManager.Alloc(ResultType.Size);
-                Method.ReturnValueLocation = location;
-            }
-
+            
             writer.Call(Method.Label);
         }
 

@@ -6,7 +6,6 @@ namespace CSharpToMpAsm.Compiler.Codes
     {
         public ICode Left { get; private set; }
         public ICode Right { get; private set; }
-        private ResultLocation _location;
 
         public ShiftBase(ICode left, ICode right) : this(left, right, TypeDefinitions.Int32)
         {
@@ -30,25 +29,13 @@ namespace CSharpToMpAsm.Compiler.Codes
 
         public TypeDefinition ResultType { get; private set; }
 
-        public ResultLocation Location
+        public ResultLocation Location { get; private set; }
+
+        public void WriteMpAsm(IMpAsmWriter writer)
         {
-            get { return _location; }
-        }
-
-        public void WriteMpAsm(IMpAsmWriter writer, IMemoryManager memManager)
-        {
-            Left.WriteMpAsm(writer, memManager);
-
-            if (Left.Location.IsWorkRegister)
-            {
-                _location = memManager.Alloc(ResultType.Size);
-                writer.MoveWToFile(_location);
-            }
-            else
-            {
-                _location = Left.Location;
-            }
-
+            Left.WriteMpAsm(writer);
+            writer.Copy(Left.Location,Location,ResultType.Size);
+            
             var literal = Right as IntValue;
             if (literal != null)
             {

@@ -16,10 +16,9 @@ namespace CSharpToMpAsm.Compiler.Codes
             ResultType = toType.IsReference ? toType.TypeParameters[0] : toType;
         }
 
-        public void WriteMpAsm(IMpAsmWriter writer, IMemoryManager memManager)
+        public void WriteMpAsm(IMpAsmWriter writer)
         {
             writer.Comment(string.Format("; {0} ({1})", Variable.Location, Variable.Name));
-            Location = memManager.Alloc(ResultType.Size);
             writer.Copy(Variable.Location, Location, ResultType.Size);
         }
 
