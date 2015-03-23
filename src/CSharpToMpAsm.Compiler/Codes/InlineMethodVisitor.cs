@@ -57,7 +57,7 @@ namespace CSharpToMpAsm.Compiler.Codes
             Variable result=null;
             if (method.ReturnType != TypeDefinitions.Void)
             {
-                result = new Variable(method.Name+"Result",method.ReturnType, new ResultLocation(-5));
+                result = new Variable(method.Name+"Result",method.ReturnType);
                 methodResult = new GetValue(result);
             } 
             

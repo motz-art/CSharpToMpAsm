@@ -1,3 +1,5 @@
+using System;
+
 namespace CSharpToMpAsm.Compiler.Codes
 {
     public class ResultLocation
@@ -26,6 +28,7 @@ namespace CSharpToMpAsm.Compiler.Codes
 
         public static ResultLocation operator + (ResultLocation location, int offset)
         {
+            if (location == null) throw new ArgumentNullException("location");
             return new ResultLocation(location.Address + offset);
         }
     }

@@ -33,7 +33,9 @@ namespace CSharpToMpAsm.Compiler
             var path = Path.ChangeExtension(Path.Combine(output.FullName, entry.Name), "asm");
             
             var code = compilationContext.CompileEntry(entry);
-            
+
+            File.WriteAllText(path, code);
+
             Console.WriteLine(code);
             
             Console.ReadLine();

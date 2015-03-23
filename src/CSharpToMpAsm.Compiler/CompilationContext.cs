@@ -18,8 +18,6 @@ namespace CSharpToMpAsm.Compiler
         }
 
         private List<Pair> _types;
-        private int _currentMemPosition = 0x20;
-        private readonly Dictionary<object, ResultLocation> _memMap = new Dictionary<object, ResultLocation>();
 
         public TypeDefinition ResolveType(AstType type)
         {
@@ -117,18 +115,6 @@ namespace CSharpToMpAsm.Compiler
 
             definition.Parameters = methodDeclaration.Parameters.Select(x => CreateParameter(x, definition)).ToArray();
 
-            if (definition.Parameters.Length == 1 && definition.Parameters[0].Type.Size == 1)
-            {
-                definition.Parameters[0].Location = ResultLocation.WorkRegister;
-            }
-            else
-            {
-                for (int i = 0; i < definition.Parameters.Length; i++)
-                {
-                    definition.Parameters[i].Location = MemAllocate(definition.Parameters[i].Type.Size);
-                }
-            }
-
             var attributes = methodDeclaration.Attributes.SelectMany(x => x.AcceptVisitor(new AttributeFinder())).ToList();
 
             var addressAttribute = attributes.FirstOrDefault(x => "Address".Equals(x.Name, StringComparison.InvariantCulture));
@@ -137,14 +123,7 @@ namespace CSharpToMpAsm.Compiler
 
             return definition;
         }
-
-        public ResultLocation MemAllocate(int size)
-        {
-            var startAddress = _currentMemPosition;
-            _currentMemPosition += size;
-            return new ResultLocation(startAddress);
-        }
-
+        
         private ParameterDestination CreateParameter(ParameterDeclaration declaration, MethodDefinition definition)
         {
             var type = ResolveType(declaration.Type);
@@ -167,13 +146,9 @@ namespace CSharpToMpAsm.Compiler
             ResultLocation address = null;
 
             var type = ResolveType(propertyDeclaration.ReturnType);
-            if (addressAttr == null)
+            if (addressAttr != null)
             {
-                address = MemAllocate(type.Size);
-            }
-            else
-            {
-                address = new ResultLocation((int)addressAttr.Arguments[0].Value);
+                address = new ResultLocation((int) addressAttr.Arguments[0].Value);
             }
 
             var propertyDestination = new PropertyDestination(propertyDeclaration.Name, type, address);
@@ -252,7 +227,7 @@ namespace CSharpToMpAsm.Compiler
 
             memManager.SetNotImplemented(0, 256);
             memManager.SetReserved(0, 0x1f);
-            memManager.SetFree(_currentMemPosition, 0x7f - _currentMemPosition);
+            memManager.SetFree(0x20, 64);
             memManager.SetReserved(0x80, 0x1f);
 
             foreach (var method in methods)
@@ -313,7 +288,6 @@ namespace CSharpToMpAsm.Compiler
                 writer.Comment("");
             }
 
-            Console.WriteLine("Variables + Properties: {0} bytes.",_currentMemPosition - 0x20);
             Console.WriteLine("Available: {0} bytes.",memManager.CalcAvailableBytes());
 
             return stringWriter.ToString();
@@ -347,23 +321,6 @@ namespace CSharpToMpAsm.Compiler
                 if (methodDefinition.Body!=null)
                 methodDefinition.Body = visitor.Visit(methodDefinition.Body);
             }
-        }
-
-        public ResultLocation GetAddress(IValueDestination destination)
-        {
-            var propertyDestination = destination as PropertyDestination;
-            if (propertyDestination != null)
-            {
-                return propertyDestination.Location;
-            }
-
-            ResultLocation result = null;
-            if (_memMap.TryGetValue(destination, out result))
-                return result;
-
-            result = MemAllocate(destination.Type.Size);
-            _memMap.Add(destination, result);
-            return result;
         }
     }
 }

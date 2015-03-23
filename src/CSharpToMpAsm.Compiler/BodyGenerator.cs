@@ -628,7 +628,7 @@ namespace CSharpToMpAsm.Compiler
             if (type == TypeDefinitions.Void)
                 throw new InvalidOperationException("Can't create variable of void type.");
 
-            var variable = new Variable(variableInitializer.Name, type, _compilationContext.MemAllocate(type.Size));
+            var variable = new Variable(variableInitializer.Name, type);
             data.AddDestination(variable);
 
             if (code != null)
