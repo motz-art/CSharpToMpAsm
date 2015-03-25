@@ -143,7 +143,7 @@ namespace CSharpToMpAsm.Compiler.Codes
                 else
                     code = Visit(assign.Code);
             }
-            return code;
+            return new Assign(assign.Destination, code);
         }
 
         protected override ICode Optimize(CastCode castCode)
