@@ -24,7 +24,7 @@ namespace CSharpToMpAsm.Compiler.Codes
         public void WriteMpAsm(IMpAsmWriter writer)
         {
             Value.WriteMpAsm(writer);
-            writer.Copy(Value.Location,Location,ResultType.Size);
+            writer.Copy(Value.Location,Location, ResultType.Size);
             writer.Swapf(Location);
         }
 

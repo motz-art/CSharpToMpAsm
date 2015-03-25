@@ -36,9 +36,7 @@ namespace CSharpToMpAsm.Compiler
 
             File.WriteAllText(path, code);
 
-            Console.WriteLine(code);
-            
-            Console.ReadLine();
+            Console.WriteLine("Done");
         }
 
         private static CompilationContext Compile(SyntaxTree[] parseResults)
