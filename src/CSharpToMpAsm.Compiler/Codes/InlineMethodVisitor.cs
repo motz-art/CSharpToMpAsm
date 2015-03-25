@@ -15,13 +15,15 @@ namespace CSharpToMpAsm.Compiler.Codes
         protected override ICode Optimize(Assign assign)
         {
             var call = assign.Code as Call;
-            if (call== null)
-                return base.Optimize(assign);
+            if (call != null && call.Method.ShouldInline)
+            {
+                var destination = assign.Destination;
 
-            var destination = assign.Destination;
+                var code = InlineCall(call, destination);
+                return Visit(code);
+            }
 
-            var code = InlineCall(call, destination);
-            return Visit(code);
+            return base.Optimize(assign);
         }
 
         protected override ICode Optimize(Call call)
