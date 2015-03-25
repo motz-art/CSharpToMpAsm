@@ -139,7 +139,7 @@ namespace CSharpToMpAsm.Compiler.Codes
             var right = Visit(shiftRight.Right);
             if (ReferenceEquals(left, shiftRight.Left) && ReferenceEquals(right, shiftRight.Right))
                 return shiftRight;
-            return new BitwiseAnd(left, right);
+            return new ShiftRight(left, right);
         }
 
         protected virtual ICode Optimize(ShiftLeft shiftLeft)
@@ -148,7 +148,7 @@ namespace CSharpToMpAsm.Compiler.Codes
             var right = Visit(shiftLeft.Right);
             if (ReferenceEquals(left, shiftLeft.Left) && ReferenceEquals(right, shiftLeft.Right))
                 return shiftLeft;
-            return new BitwiseAnd(left, right);
+            return new ShiftLeft(left, right);
         }
 
         protected virtual ICode Optimize(BitwiseOr bitwiseOr)
