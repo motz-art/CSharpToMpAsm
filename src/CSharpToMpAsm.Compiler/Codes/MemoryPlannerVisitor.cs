@@ -16,8 +16,7 @@ namespace CSharpToMpAsm.Compiler.Codes
         protected override ICode Optimize(Assign assign)
         {
             assign.Destination.Location = _memManager.Alloc(assign.Destination);
-            var code = Visit(assign.Code);
-            return new Assign(assign.Destination, code);
+            return new Assign(assign.Destination, Visit(assign.Code));
         }
 
         protected override ICode Optimize(GetValue getValue)
@@ -50,7 +49,7 @@ namespace CSharpToMpAsm.Compiler.Codes
             {
                 parameter.Location = _memManager.Alloc(parameter);
             }
-            if (method.ReturnValueLocation==null)
+            if (method.ReturnValueLocation == null)
                 method.ReturnValueLocation = _memManager.Alloc(method.ReturnType.Size);
             var args = call.Args.Select(x => Visit(x)).ToArray();
             return new Call(method, args);
@@ -108,12 +107,43 @@ namespace CSharpToMpAsm.Compiler.Codes
             var codes = new List<ICode>();
             foreach (var code in blockCode.Codes)
             {
-                var newCode = Visit(code);
-                codes.Add(newCode);
-                if (newCode.ResultType!=TypeDefinitions.Void)
-                    _memManager.Dispose(newCode.Location, newCode.ResultType.Size);
+
+                var assignCode = code as Assign;
+                
+                if (assignCode != null) codes.Add(OptimizeAssign(assignCode));
+                else
+                {
+                    var newCode = Visit(code);
+                    codes.Add(newCode);
+
+                    if (newCode.ResultType != TypeDefinitions.Void)
+                        _memManager.Dispose(newCode.Location, newCode.ResultType.Size);
+                }
             }
             return new BlockCode(codes.ToArray());
+        }
+
+        private ICode OptimizeAssign(Assign assign)
+        {
+            assign.Destination.Location = _memManager.Alloc(assign.Destination);
+
+            ICode code;
+            var getValue = assign.Code as GetValue;
+            if (getValue != null)
+            {
+                code = new GetValue(getValue.Variable, getValue.ResultType, assign.Destination.Location);
+            }
+            else
+            {
+                var intValue = assign.Code as IntValue;
+                if (intValue != null)
+                {
+                    code = new IntValue(intValue.Value, intValue.ResultType, assign.Destination.Location);
+                }
+                else
+                    code = Visit(assign.Code);
+            }
+            return code;
         }
 
         protected override ICode Optimize(CastCode castCode)
