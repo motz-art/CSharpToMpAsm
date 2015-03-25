@@ -52,7 +52,7 @@ namespace CSharpToMpAsm.Compiler.Codes
             throw new NotImplementedException();
         }
 
-        private ICode Optimize(EqualityCode equalityCode)
+        protected virtual ICode Optimize(EqualityCode equalityCode)
         {
             var left = Visit(equalityCode.Left);
             var right = Visit(equalityCode.Right);
@@ -62,7 +62,7 @@ namespace CSharpToMpAsm.Compiler.Codes
             return new EqualityCode(left, right);
         }
 
-        private ICode Optimize(IfElseCode ifElseCode)
+        protected virtual ICode Optimize(IfElseCode ifElseCode)
         {
             var condition = Visit(ifElseCode.Condition);
             var trueCode = Visit(ifElseCode.TrueCode);

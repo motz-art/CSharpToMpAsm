@@ -268,6 +268,8 @@ namespace CSharpToMpAsm.Compiler
                 }
             }
 
+            methods = methods.Where(x => !x.ShouldInline).ToList();
+
             var memManager = new MemoryManager(256);
 
             memManager.SetNotImplemented(0, 256);
@@ -281,7 +283,7 @@ namespace CSharpToMpAsm.Compiler
                 method.Body = memoryVisitor.Visit(method.Body);
             }
 
-            foreach (var method in methods.Where(x=>!x.ShouldInline))
+            foreach (var method in methods)
             {
                 writer.WriteLabel(method.Label);
 

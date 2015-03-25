@@ -13,6 +13,20 @@ namespace CSharpToMpAsm.Compiler.Codes
             _memManager = memManager;
         }
 
+        protected override ICode Optimize(EqualityCode equalityCode)
+        {
+            var left = Visit(equalityCode.Left);
+            var right = Visit(equalityCode.Right);
+            
+            _memManager.Dispose(left.Location, left.ResultType.Size);
+            _memManager.Dispose(right.Location, right.ResultType.Size);
+
+            if (ReferenceEquals(left, equalityCode.Left)
+                && ReferenceEquals(right, equalityCode.Right))
+                return equalityCode;
+            return new EqualityCode(left, right);
+        }
+
         protected override ICode Optimize(Assign assign)
         {
             assign.Destination.Location = _memManager.Alloc(assign.Destination);
