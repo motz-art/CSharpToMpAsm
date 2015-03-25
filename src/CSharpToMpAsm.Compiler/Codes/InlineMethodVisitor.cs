@@ -51,9 +51,18 @@ namespace CSharpToMpAsm.Compiler.Codes
             if (call == null || !call.Method.ShouldInline) return code;
             var method = call.Method;
 
-            var destinations =
-                method.Parameters.Select(x => new Variable(x.Name, x.Type, x.Location)).ToDictionary(x => x.Name);
+            var destinations = new Dictionary<string, Variable>();
+            var codes = new List<ICode>();
 
+            for (var i = 0; i < method.Parameters.Length; i++)
+            {
+                var x = method.Parameters[i];
+                var argument = call.Args[i];
+                var variable = new Variable(x.Name, x.Type, x.Location);
+                destinations.Add(x.Name, variable);
+                codes.Add(new Assign(variable, argument));
+            }
+            
             Variable result=null;
             if (method.ReturnType != TypeDefinitions.Void)
             {
@@ -62,13 +71,9 @@ namespace CSharpToMpAsm.Compiler.Codes
             } 
             
             var translated = new MethodBodyVisitor(destinations, result).Visit(method.Body);
-            var codes = new List<ICode>();
-            for (int i = 0; i < method.Parameters.Length; i++)
-            {
-                codes.Add(new Assign(destinations[method.Parameters[i].Name], call.Args[i]));
-            }
-            codes.Add(translated);
             
+            codes.Add(translated);
+
             return new BlockCode(codes.ToArray());
         }
 
