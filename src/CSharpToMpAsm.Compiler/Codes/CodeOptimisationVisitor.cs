@@ -5,7 +5,7 @@ namespace CSharpToMpAsm.Compiler.Codes
 {
     public abstract class CodeOptimisationVisitor
     {
-        public ICode Visit(ICode code)
+        public virtual ICode Visit(ICode code)
         {
             var nullCode = code as NullCode;
             if (nullCode != null) return Optimize(nullCode);
