@@ -136,7 +136,7 @@ namespace CSharpToMpAsm.Compiler.Codes
             protected override ICode Optimize(ReturnCode returnCode)
             {
                 if (_result != null)
-                    return new Assign(_result, returnCode.Value);
+                    return new Assign(_result, Visit(returnCode.Value));
                 return returnCode;
             }
 
