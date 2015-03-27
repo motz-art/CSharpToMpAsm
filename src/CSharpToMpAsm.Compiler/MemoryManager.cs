@@ -54,16 +54,29 @@ namespace CSharpToMpAsm.Compiler
             if (size <= 0)
                 throw new ArgumentException("size should be greater than 0.");
 
+            var location = FindFreeBlock(size);
+            Set(location, size, AddressState.Allocated);
+            return new ResultLocation(location);
+        }
+
+        private int FindFreeBlock(int size)
+        {
+            var result = TryFindFreeBlock(size);
+            if (result < 0)
+                throw new InvalidOperationException("Out of memory.");
+            return result;
+        }
+
+        private int TryFindFreeBlock(int size)
+        {
             for (int i = 0; i < _memoryMap.Length - size; i++)
             {
                 if (AllIs(i, size, AddressState.Free))
                 {
-                    Set(i, size, AddressState.Allocated);
-                    return new ResultLocation(i);
+                    return i;
                 }
             }
-
-            throw new InvalidOperationException("Out of memory.");
+            return -1;
         }
 
         private void Set(int address, int size, AddressState state)
@@ -105,8 +118,8 @@ namespace CSharpToMpAsm.Compiler
         {
             if (location.IsWorkRegister)
             {
-                if (size != 1) throw new InvalidOperationException("Working register should only containe single byte of data.");
-                return;
+                if (size == 1) return;
+                throw new InvalidOperationException("Working register should only containe single byte of data.");
             }
 
             var address = location.Address;
@@ -124,7 +137,9 @@ namespace CSharpToMpAsm.Compiler
             var location = destination.Location;
             if (location == null && !_locations.TryGetValue(destination, out location))
             {
-                location = Alloc(destination.Type.Size);
+                var address = FindFreeBlock(destination.Type.Size);
+                Set(address, destination.Type.Size, AddressState.Reserved);
+                location = new ResultLocation(address);
                 _locations.Add(destination, location);
             }
             return location;
