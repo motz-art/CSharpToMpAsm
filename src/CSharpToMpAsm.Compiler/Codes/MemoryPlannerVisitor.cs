@@ -63,8 +63,9 @@ namespace CSharpToMpAsm.Compiler.Codes
             {
                 parameter.Location = _memManager.Alloc(parameter);
             }
-            if (method.ReturnValueLocation == null)
+            if (method.ReturnType!=TypeDefinitions.Void && method.ReturnValueLocation == null)
                 method.ReturnValueLocation = _memManager.Alloc(method.ReturnType.Size);
+
             var args = call.Args.Select(x => Visit(x)).ToArray();
             return new Call(method, args);
         }

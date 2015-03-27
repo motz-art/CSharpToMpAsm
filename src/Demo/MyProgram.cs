@@ -19,6 +19,9 @@
             {
                 cnt=255;
                 value++;
+                if (value == 0)
+                    return;
+
                 Write(value);
             }
         }
