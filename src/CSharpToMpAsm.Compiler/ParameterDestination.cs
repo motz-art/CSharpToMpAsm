@@ -37,5 +37,14 @@ namespace CSharpToMpAsm.Compiler
 
         public TypeDefinition Type { get; private set; }
         public ResultLocation Location { get; set; }
+
+        public override string ToString()
+        {
+            if (Location != null)
+            {
+                return string.Format("[Address({0})] {1} {2}", Location.Address, Type, Name);
+            }
+            return string.Format("{0} {1}", Type, Name);
+        }
     }
 }

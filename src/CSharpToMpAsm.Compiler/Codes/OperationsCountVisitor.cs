@@ -14,6 +14,13 @@ namespace CSharpToMpAsm.Compiler.Codes
             return base.Optimize(whileCode);
         }
 
+        protected override ICode Optimize(IfElseCode ifElseCode)
+        {
+            HasBranhes = true;
+            Count++;
+            return base.Optimize(ifElseCode);
+        }
+
         protected override ICode Optimize(SwapfCode swapf)
         {
             Count++;

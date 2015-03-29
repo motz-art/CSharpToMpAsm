@@ -118,7 +118,7 @@ namespace CSharpToMpAsm.Compiler
 
             var addressAttribute = attributes.FirstOrDefault(x => "Address".Equals(x.Name, StringComparison.InvariantCulture));
 
-            definition.CodeAddress = addressAttribute != null ? (int)addressAttribute.Arguments[0].Value : -1;
+            definition.CodeAddress = addressAttribute != null ? (int)addressAttribute.Arguments[0].Value : MethodDefinition.CodeAddressNotSet;
 
             return definition;
         }
@@ -227,7 +227,7 @@ namespace CSharpToMpAsm.Compiler
             foreach (var method in methods)
             {
                 ILabel label;
-                label = method.CodeAddress != -1
+                label = method.CodeAddress != MethodDefinition.CodeAddressNotSet
                             ? writer.CreateLabel(method.Name, method.CodeAddress)
                             : writer.CreateLabel(method.Name);
 
@@ -255,7 +255,7 @@ namespace CSharpToMpAsm.Compiler
                         method.Body = newBody;
                     }
 
-                    if (!method.ShouldInline)
+                    if (!method.ShouldInline && method.CodeAddress == MethodDefinition.CodeAddressNotSet)
                     {
                         var operationsCountVisitor = new OperationsCountVisitor();
                         operationsCountVisitor.Visit(method.Body);

@@ -1,9 +1,11 @@
+using System.Text;
 using CSharpToMpAsm.Compiler.Codes;
 
 namespace CSharpToMpAsm.Compiler
 {
     public class MethodDefinition
     {
+        public const int CodeAddressNotSet = -1;
         public MethodDefinition Overrides;
         public ILabel Label;
         public ParameterDestination[] Parameters { get; set; }
@@ -32,6 +34,30 @@ namespace CSharpToMpAsm.Compiler
         public ICode GenerateIl(ICode[] args)
         {
             return new Call(this, args);
+        }
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            if (CodeAddress != CodeAddressNotSet)
+            {
+                sb.AppendFormat("[CodeAddress({0})]", CodeAddress);
+            }
+
+            if (ReturnValueLocation != null)
+            {
+                sb.AppendFormat("[Address({0})]", ReturnValueLocation);
+            }
+
+            sb.AppendFormat("{0} {1}(", ReturnType, Name);
+
+            foreach (var parameter in Parameters)
+            {
+                sb.Append(parameter);
+            }
+
+            sb.Append(")");
+            return sb.ToString();
         }
     }
 }
