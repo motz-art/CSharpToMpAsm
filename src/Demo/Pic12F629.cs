@@ -18,11 +18,10 @@ namespace Demo
         {
             Setup();
 
-            begin: 
-            
-            DoWork();
-            
-            goto begin;
+            while (true)
+            {
+                DoWork();
+            }
         }
 
         public virtual void Setup() { }

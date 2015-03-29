@@ -7,6 +7,13 @@ namespace CSharpToMpAsm.Compiler.Codes
         public int Count { get; private set; }
         public bool HasBranhes { get; set; }
 
+        protected override ICode Optimize(WhileLoopCode whileCode)
+        {
+            HasBranhes = true;
+            Count++;
+            return base.Optimize(whileCode);
+        }
+
         protected override ICode Optimize(SwapfCode swapf)
         {
             Count++;

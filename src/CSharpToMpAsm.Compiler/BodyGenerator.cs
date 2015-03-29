@@ -224,6 +224,10 @@ namespace CSharpToMpAsm.Compiler
             {
                 return new IntValue((int)primitiveExpression.Value);
             }
+            if (primitiveExpression.Value is bool)
+            {
+                return new BoolValue((bool) primitiveExpression.Value);
+            }
             throw new NotImplementedException();
         }
 
@@ -529,7 +533,8 @@ namespace CSharpToMpAsm.Compiler
 
         public ICode VisitWhileStatement(WhileStatement whileStatement, BodyContext data)
         {
-            throw new NotImplementedException();
+            return new WhileLoopCode(whileStatement.Condition.AcceptVisitor(this, data),
+                whileStatement.EmbeddedStatement.AcceptVisitor(this, data));
         }
 
         public ICode VisitYieldBreakStatement(YieldBreakStatement yieldBreakStatement, BodyContext data)

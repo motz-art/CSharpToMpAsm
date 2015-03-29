@@ -49,7 +49,26 @@ namespace CSharpToMpAsm.Compiler.Codes
             if (ifElseCode != null) return Optimize(ifElseCode);
             var equalityCode = code as EqualityCode;
             if (equalityCode != null) return Optimize(equalityCode);
+            var whileCode = code as WhileLoopCode;
+            if (whileCode != null) return Optimize(whileCode);
+            var boolValue = code as BoolValue;
+            if (boolValue != null) return Optimize(boolValue);
             throw new NotImplementedException();
+        }
+
+        private ICode Optimize(BoolValue boolValue)
+        {
+            return boolValue;
+        }
+
+        protected virtual ICode Optimize(WhileLoopCode whileCode)
+        {
+            var condition = Visit(whileCode.Condition);
+            var body = Visit(whileCode.LoopBody);
+            if (ReferenceEquals(condition, whileCode.Condition) && ReferenceEquals(body, whileCode.LoopBody))
+                return whileCode;
+            
+            return new WhileLoopCode(condition, body);
         }
 
         protected virtual ICode Optimize(EqualityCode equalityCode)

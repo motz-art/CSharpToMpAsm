@@ -79,6 +79,7 @@
     <Compile Include="Codes\BitwiseBase.cs" />
     <Compile Include="Codes\BitwiseOr.cs" />
     <Compile Include="Codes\BlockCode.cs" />
+    <Compile Include="Codes\BoolValue.cs" />
     <Compile Include="Codes\Call.cs" />
     <Compile Include="Codes\CastCode.cs" />
     <Compile Include="Codes\CastCodeOptimisationVisitor.cs" />
@@ -106,6 +107,7 @@
     <Compile Include="Codes\ShiftRight.cs" />
     <Compile Include="Codes\SwapfCode.cs" />
     <Compile Include="Codes\SwapfOptimisationVisitor.cs" />
+    <Compile Include="Codes\WhileLoopCode.cs" />
     <Compile Include="CompilationContext.cs" />
     <Compile Include="Codes\GotoCode.cs" />
     <Compile Include="ILabel.cs" />
