@@ -280,6 +280,7 @@ namespace CSharpToMpAsm.Compiler
             var memoryVisitor = new MemoryPlannerVisitor(memManager);
             foreach (var method in methods)
             {
+                memoryVisitor.SetupMethodDataLocations(method);
                 method.Body = memoryVisitor.Visit(method.Body);
             }
 

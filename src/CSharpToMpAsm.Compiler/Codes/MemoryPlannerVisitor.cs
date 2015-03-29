@@ -59,15 +59,39 @@ namespace CSharpToMpAsm.Compiler.Codes
         protected override ICode Optimize(Call call)
         {
             var method = call.Method;
-            foreach (var parameter in method.Parameters)
-            {
-                parameter.Location = _memManager.Alloc(parameter);
-            }
-            if (method.ReturnType!=TypeDefinitions.Void && method.ReturnValueLocation == null)
-                method.ReturnValueLocation = _memManager.Alloc(method.ReturnType.Size);
+
+            SetupMethodDataLocations(method);
 
             var args = call.Args.Select(x => Visit(x)).ToArray();
             return new Call(method, args);
+        }
+
+        public void SetupMethodDataLocations(MethodDefinition method)
+        {
+            if (method.ReturnType != TypeDefinitions.Void && method.ReturnValueLocation == null)
+                method.ReturnValueLocation = _memManager.Alloc(method.ReturnType.Size);
+
+            foreach (var parameter in method.Parameters)
+            {
+                if (parameter.Location != null) continue;
+                if (IsWorkingRegisterUsagePosiible(method, parameter))
+                {
+                    parameter.Location = ResultLocation.WorkRegister;
+                }
+                else
+                {
+                    parameter.Location = _memManager.Alloc(parameter);
+                }
+            }
+        }
+
+        private bool IsWorkingRegisterUsagePosiible(MethodDefinition method, ParameterDestination parameter)
+        {
+            if (parameter.Type.Size != 1) return false;
+            if (method.Parameters.Where(x => x.Location != null).Any(x => x.Location.IsWorkRegister)) return false;
+            var visitor = new ParameterUsageVisitor(parameter);
+            visitor.Visit(method.Body);
+            return visitor.IsWorkingRegisterUsagePosiible;
         }
 
         protected override ICode Optimize(BitwiseOr bitwiseOr)
@@ -173,6 +197,50 @@ namespace CSharpToMpAsm.Compiler.Codes
         {
             var location = _memManager.Alloc(intValue.ResultType.Size);
             return new IntValue(intValue.Value, intValue.ResultType, location);
+        }
+
+        private class ParameterUsageVisitor : CodeOptimisationVisitor
+        {
+            private bool _isFirst = true;
+            private bool _isSet = false;
+
+            private readonly ParameterDestination _parameter;
+
+            public ParameterUsageVisitor(ParameterDestination parameter)
+            {
+                _parameter = parameter;
+                IsWorkingRegisterUsagePosiible = true;
+            }
+
+            public override ICode Visit(ICode code)
+            {
+                if (_isSet)
+                    IsWorkingRegisterUsagePosiible = false;
+
+                var result = base.Visit(code);
+                _isFirst = false;
+                return result;
+            }
+
+            protected override ICode Optimize(GetValue getValue)
+            {
+                if (getValue.Variable.Equals(_parameter) && !_isFirst)
+                    IsWorkingRegisterUsagePosiible = false;
+
+                return base.Optimize(getValue);
+            }
+
+            protected override ICode Optimize(Assign assign)
+            {
+                var result = base.Optimize(assign);
+
+                if (assign.Destination.Equals(_parameter))
+                    _isSet = true;
+
+                return result;
+            }
+
+            public bool IsWorkingRegisterUsagePosiible { get; private set; }
         }
     }
 }
