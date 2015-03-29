@@ -148,7 +148,7 @@ namespace CSharpToMpAsm.Compiler
 
         public ICode VisitIdentifierExpression(IdentifierExpression identifierExpression, BodyContext data)
         {
-            return data.Resolve(identifierExpression.Identifier).GetValue;
+            return data.Resolve(identifierExpression.Identifier).CreateGetValueCode();
         }
 
         public ICode VisitIndexerExpression(IndexerExpression indexerExpression, BodyContext data)

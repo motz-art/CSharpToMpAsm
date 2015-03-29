@@ -26,11 +26,15 @@ namespace CSharpToMpAsm.Compiler
         {
             Name = name;
             Type = type;
-            GetValue = new GetValue(this);
         }
 
         public string Name { get; private set; }
-        public ICode GetValue { get; private set; }
+
+        public ICode CreateGetValueCode()
+        {
+            return new GetValue(this);
+        }
+
         public TypeDefinition Type { get; private set; }
         public ResultLocation Location { get; set; }
     }

@@ -5,7 +5,7 @@ namespace CSharpToMpAsm.Compiler
     public interface IValueDestination
     {
         string Name { get; }
-        ICode GetValue { get; }
+        ICode CreateGetValueCode();
         TypeDefinition Type { get; }
         ResultLocation Location { get; set; }
     }
