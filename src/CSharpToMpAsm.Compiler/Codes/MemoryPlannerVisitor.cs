@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace CSharpToMpAsm.Compiler.Codes
@@ -15,6 +13,16 @@ namespace CSharpToMpAsm.Compiler.Codes
 
         protected override ICode Optimize(EqualityCode equalityCode)
         {
+            var zeroConst = (equalityCode.Left as IntValue)??(equalityCode.Right as IntValue);
+            if (zeroConst != null && zeroConst.Value == 0)
+            {
+                var getValue = (equalityCode.Left as GetValue) ?? (equalityCode.Right as GetValue);
+                if (getValue != null)
+                {
+                    return new EqualityCode(new GetValue(getValue.Destination, getValue.ResultType, getValue.Destination.Location), zeroConst );
+                }
+            }
+
             var left = Visit(equalityCode.Left);
             var right = Visit(equalityCode.Right);
 
