@@ -66,49 +66,6 @@ namespace CSharpToMpAsm.Compiler.Codes
             return new Call(method, args);
         }
 
-        public void SetupMethodDataLocations(MethodDefinition method)
-        {
-            if (method.ReturnType != TypeDefinitions.Void && method.ReturnValueLocation == null)
-            {
-                if (method.ReturnType.Size == 1)
-                {
-                    method.ReturnValueLocation = ResultLocation.WorkRegister;
-                }
-                else
-                {
-                    method.ReturnValueLocation = _memManager.Alloc(method.ReturnType.Size);
-                }
-            }
-
-            foreach (var parameter in method.Parameters)
-            {
-                if (parameter.Location != null) continue;
-                if (IsWorkingRegisterUsagePosiible(method, parameter))
-                {
-                    parameter.Location = ResultLocation.WorkRegister;
-                }
-                else
-                {
-                    parameter.Location = _memManager.Alloc(parameter);
-                }
-            }
-        }
-
-        private bool IsWorkingRegisterUsagePosiible(MethodDefinition method, ParameterDestination parameter)
-        {
-            if (parameter.Type.IsReference && method.ReturnValueLocation == ResultLocation.WorkRegister) return false;
-            
-            var type = parameter.Type;
-            if (parameter.Type.IsReference)
-                type = CommonCodes.Dereference(parameter.Type);
-
-            if (type.Size != 1) return false;
-            if (method.Parameters.Where(x => x.Location != null).Any(x => x.Location.IsWorkRegister)) return false;
-            var visitor = new ParameterUsageVisitor(parameter);
-            visitor.Visit(method.Body);
-            return visitor.IsWorkingRegisterUsagePosiible;
-        }
-
         protected override ICode Optimize(BitwiseOr bitwiseOr)
         {
             var left = Visit(bitwiseOr.Left);
@@ -212,6 +169,49 @@ namespace CSharpToMpAsm.Compiler.Codes
         {
             var location = _memManager.Alloc(intValue.ResultType.Size);
             return new IntValue(intValue.Value, intValue.ResultType, location);
+        }
+
+        public void SetupMethodDataLocations(MethodDefinition method)
+        {
+            if (method.ReturnType != TypeDefinitions.Void && method.ReturnValueLocation == null)
+            {
+                if (method.ReturnType.Size == 1)
+                {
+                    method.ReturnValueLocation = ResultLocation.WorkRegister;
+                }
+                else
+                {
+                    method.ReturnValueLocation = _memManager.Alloc(method.ReturnType.Size);
+                }
+            }
+
+            foreach (var parameter in method.Parameters)
+            {
+                if (parameter.Location != null) continue;
+                if (IsWorkingRegisterUsagePosiible(method, parameter))
+                {
+                    parameter.Location = ResultLocation.WorkRegister;
+                }
+                else
+                {
+                    parameter.Location = _memManager.Alloc(parameter);
+                }
+            }
+        }
+
+        private bool IsWorkingRegisterUsagePosiible(MethodDefinition method, ParameterDestination parameter)
+        {
+            if (parameter.Type.IsReference && method.ReturnValueLocation == ResultLocation.WorkRegister) return false;
+            
+            var type = parameter.Type;
+            if (parameter.Type.IsReference)
+                type = CommonCodes.Dereference(parameter.Type);
+
+            if (type.Size != 1) return false;
+            if (method.Parameters.Where(x => x.Location != null).Any(x => x.Location.IsWorkRegister)) return false;
+            var visitor = new ParameterUsageVisitor(parameter);
+            visitor.Visit(method.Body);
+            return visitor.IsWorkingRegisterUsagePosiible;
         }
 
         private class ParameterUsageVisitor : CodeOptimisationVisitor
