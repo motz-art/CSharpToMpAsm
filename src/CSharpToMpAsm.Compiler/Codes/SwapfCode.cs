@@ -24,8 +24,14 @@ namespace CSharpToMpAsm.Compiler.Codes
         public void WriteMpAsm(IMpAsmWriter writer)
         {
             Value.WriteMpAsm(writer);
-            writer.Copy(Value.Location,Location, ResultType.Size);
-            writer.SwapFile(Location);
+            
+            if (Location.IsWorkRegister)
+                writer.SwapFileToW(Value.Location);
+            else
+            {
+                writer.Copy(Value.Location, Location, ResultType.Size);
+                writer.SwapFile(Location);
+            }
         }
 
         protected bool Equals(SwapfCode other)

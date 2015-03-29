@@ -159,6 +159,19 @@ namespace CSharpToMpAsm.Compiler.Codes
                 return new IntValue(intValue.Value, intValue.ResultType, assign.Destination.Location);
             }
 
+            var swapf = assign.Code as SwapfCode;
+            if (swapf != null)
+            {
+                getValue = swapf.Value as GetValue;
+                if (getValue != null)
+                {
+                    if (getValue.Destination.Equals(assign.Destination))
+                        return new SwapfCode(new GetValue(getValue.Destination, getValue.ResultType, assign.Destination.Location), assign.Destination.Location);
+
+                    return new SwapfCode(new GetValue(getValue.Destination, getValue.ResultType, getValue.Destination.Location), ResultLocation.WorkRegister);
+                }
+            }
+
             return Visit(assign.Code);
         }
 

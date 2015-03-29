@@ -27,6 +27,7 @@ namespace CSharpToMpAsm.Compiler
         void AndWFile(ResultLocation location);
         void ClearFile(ResultLocation location);
         void SwapFile(ResultLocation location);
+        void SwapFileToW(ResultLocation location);
         void IncrementFile(ResultLocation location);
         void DecrementFile(ResultLocation location);
         void MoveFileToFile(ResultLocation location);
@@ -160,6 +161,11 @@ namespace CSharpToMpAsm.Compiler
         public void SwapFile(ResultLocation location)
         {
             _writer.WriteLine("\tSWAPF {0},f", location);
+        }
+
+        public void SwapFileToW(ResultLocation location)
+        {
+            _writer.WriteLine("\tSWAPF {0},w", location);
         }
 
         public void IncrementFile(ResultLocation location)
