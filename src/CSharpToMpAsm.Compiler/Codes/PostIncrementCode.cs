@@ -8,12 +8,14 @@ namespace CSharpToMpAsm.Compiler.Codes
 
         public PostIncrementCode(IValueDestination destination)
         {
+            if (destination == null) throw new ArgumentNullException("destination");
             Destination = destination;
         }
 
         public PostIncrementCode(IValueDestination destination, ResultLocation location)
             : this(destination)
         {
+            if (location == null) throw new ArgumentNullException("location");
             Location = location;
         }
 

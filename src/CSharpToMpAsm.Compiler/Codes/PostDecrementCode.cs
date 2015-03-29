@@ -9,11 +9,13 @@ namespace CSharpToMpAsm.Compiler.Codes
 
         public PostDecrementCode(IValueDestination destination)
         {
+            if (destination == null) throw new ArgumentNullException("destination");
             Destination = destination;
         }
 
         public PostDecrementCode(IValueDestination destination, ResultLocation location) : this(destination)
         {
+            if (location == null) throw new ArgumentNullException("location");
             Location = location;
         }
 
