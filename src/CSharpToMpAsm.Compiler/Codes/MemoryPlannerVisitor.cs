@@ -17,7 +17,7 @@ namespace CSharpToMpAsm.Compiler.Codes
         {
             var left = Visit(equalityCode.Left);
             var right = Visit(equalityCode.Right);
-            
+
             _memManager.Dispose(left.Location, left.ResultType.Size);
             _memManager.Dispose(right.Location, right.ResultType.Size);
 
@@ -123,7 +123,7 @@ namespace CSharpToMpAsm.Compiler.Codes
             {
 
                 var assignCode = code as Assign;
-                
+
                 if (assignCode != null) codes.Add(OptimizeAssign(assignCode));
                 else
                 {
@@ -165,7 +165,7 @@ namespace CSharpToMpAsm.Compiler.Codes
                 getValue = swapf.Value as GetValue;
                 if (getValue != null)
                 {
-                    if (getValue.Destination.Equals(assign.Destination))
+                    if (ReferenceEquals(getValue.Destination, assign.Destination))
                         return new SwapfCode(new GetValue(getValue.Destination, getValue.ResultType, assign.Destination.Location), assign.Destination.Location);
 
                     return new SwapfCode(new GetValue(getValue.Destination, getValue.ResultType, getValue.Destination.Location), ResultLocation.WorkRegister);
@@ -220,7 +220,7 @@ namespace CSharpToMpAsm.Compiler.Codes
         private bool IsWorkingRegisterUsagePosiible(MethodDefinition method, ParameterDestination parameter)
         {
             if (parameter.Type.IsReference && method.ReturnValueLocation == ResultLocation.WorkRegister) return false;
-            
+
             var type = parameter.Type;
             if (parameter.Type.IsReference)
                 type = CommonCodes.Dereference(parameter.Type);
@@ -257,7 +257,7 @@ namespace CSharpToMpAsm.Compiler.Codes
 
             protected override ICode Optimize(GetValue getValue)
             {
-                if (getValue.Destination.Equals(_parameter) && !_isFirst)
+                if (ReferenceEquals(getValue.Destination, _parameter) && !_isFirst)
                     IsWorkingRegisterUsagePosiible = false;
 
                 return base.Optimize(getValue);
@@ -267,7 +267,7 @@ namespace CSharpToMpAsm.Compiler.Codes
             {
                 var result = base.Optimize(assign);
 
-                if (assign.Destination.Equals(_parameter))
+                if (ReferenceEquals(assign.Destination, _parameter))
                     _isSet = true;
 
                 return result;
