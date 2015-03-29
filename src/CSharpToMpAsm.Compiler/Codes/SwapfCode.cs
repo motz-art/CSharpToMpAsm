@@ -25,7 +25,7 @@ namespace CSharpToMpAsm.Compiler.Codes
         {
             Value.WriteMpAsm(writer);
             writer.Copy(Value.Location,Location, ResultType.Size);
-            writer.Swapf(Location);
+            writer.SwapFile(Location);
         }
 
         protected bool Equals(SwapfCode other)

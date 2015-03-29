@@ -26,7 +26,7 @@ namespace CSharpToMpAsm.Compiler
         void RotateRightFileToW(ResultLocation location);
         void AndWFile(ResultLocation location);
         void ClearFile(ResultLocation location);
-        void Swapf(ResultLocation location);
+        void SwapFile(ResultLocation location);
         void IncrementFile(ResultLocation location);
         void DecrementFile(ResultLocation location);
         void MoveFileToFile(ResultLocation location);
@@ -157,7 +157,7 @@ namespace CSharpToMpAsm.Compiler
             _writer.WriteLine("\tCLRF {0}", location);
         }
 
-        public void Swapf(ResultLocation location)
+        public void SwapFile(ResultLocation location)
         {
             _writer.WriteLine("\tSWAPF {0},f", location);
         }
