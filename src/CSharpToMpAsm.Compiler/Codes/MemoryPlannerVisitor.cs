@@ -37,7 +37,10 @@ namespace CSharpToMpAsm.Compiler.Codes
         {
             var location = _memManager.Alloc(getValue.Destination);
             getValue.Destination.Location = location;
-            return new GetValue(getValue.Destination, getValue.ResultType, _memManager.Alloc(getValue.ResultType.Size));
+
+            var resultLocation = _memManager.Alloc(getValue.ResultType.Size);
+
+            return new GetValue(getValue.Destination, getValue.ResultType, resultLocation);
         }
 
         protected override ICode Optimize(AddInts addInts)
@@ -138,23 +141,25 @@ namespace CSharpToMpAsm.Compiler.Codes
         {
             assign.Destination.Location = _memManager.Alloc(assign.Destination);
 
-            ICode code;
+            var valueCode = OptimizeValueCode(assign);
+            return new Assign(assign.Destination, valueCode);
+        }
+
+        private ICode OptimizeValueCode(Assign assign)
+        {
             var getValue = assign.Code as GetValue;
             if (getValue != null)
             {
-                code = new GetValue(getValue.Destination, getValue.ResultType, assign.Destination.Location);
+                return new GetValue(getValue.Destination, getValue.ResultType, assign.Destination.Location);
             }
-            else
+
+            var intValue = assign.Code as IntValue;
+            if (intValue != null)
             {
-                var intValue = assign.Code as IntValue;
-                if (intValue != null)
-                {
-                    code = new IntValue(intValue.Value, intValue.ResultType, assign.Destination.Location);
-                }
-                else
-                    code = Visit(assign.Code);
+                return new IntValue(intValue.Value, intValue.ResultType, assign.Destination.Location);
             }
-            return new Assign(assign.Destination, code);
+
+            return Visit(assign.Code);
         }
 
         protected override ICode Optimize(CastCode castCode)
