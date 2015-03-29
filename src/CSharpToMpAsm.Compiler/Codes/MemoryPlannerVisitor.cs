@@ -118,23 +118,20 @@ namespace CSharpToMpAsm.Compiler.Codes
 
         protected override ICode Optimize(BlockCode blockCode)
         {
-            var codes = new List<ICode>();
-            foreach (var code in blockCode.Codes)
-            {
+            return new BlockCode(blockCode.Codes.Select(OptimizeBlockItem).ToArray());
+        }
 
-                var assignCode = code as Assign;
+        private ICode OptimizeBlockItem(ICode code)
+        {
+            var assignCode = code as Assign;
+            if (assignCode != null) return OptimizeAssign(assignCode);
+            
+            var newCode = Visit(code);
 
-                if (assignCode != null) codes.Add(OptimizeAssign(assignCode));
-                else
-                {
-                    var newCode = Visit(code);
-                    codes.Add(newCode);
+            if (newCode.ResultType != TypeDefinitions.Void)
+                _memManager.Dispose(newCode.Location, newCode.ResultType.Size);
 
-                    if (newCode.ResultType != TypeDefinitions.Void)
-                        _memManager.Dispose(newCode.Location, newCode.ResultType.Size);
-                }
-            }
-            return new BlockCode(codes.ToArray());
+            return newCode;
         }
 
         private ICode OptimizeAssign(Assign assign)
