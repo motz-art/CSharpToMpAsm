@@ -26,5 +26,15 @@ namespace CSharpToMpAsm.Compiler.Codes
                 writer.MoveWToFile(toLocation + i);
             }
         }
+
+        public static TypeDefinition Dereference(TypeDefinition type)
+        {
+            if (!type.IsReference) return type;
+            if (type.TypeParameters == null || type.TypeParameters.Count != 1)
+            {
+                throw new InvalidOperationException("Invalid reference type.");
+            }
+            return type.TypeParameters[0];
+        }
     }
 }

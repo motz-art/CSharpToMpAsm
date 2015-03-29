@@ -16,8 +16,8 @@ namespace CSharpToMpAsm.Compiler.Codes
             Destination = destination;
             Code = code;
 
-            var destinationType = Dereference(Destination.Type);
-            var codeType = Dereference(Code.ResultType);
+            var destinationType = CommonCodes.Dereference(Destination.Type);
+            var codeType = CommonCodes.Dereference(Code.ResultType);
 
             if (destinationType != codeType)
             {
@@ -33,16 +33,6 @@ namespace CSharpToMpAsm.Compiler.Codes
         public ResultLocation Location
         {
             get { return Code.Location; }
-        }
-
-        private static TypeDefinition Dereference(TypeDefinition type)
-        {
-            if (!type.IsReference) return type;
-            if (type.TypeParameters == null || type.TypeParameters.Count != 1)
-            {
-                throw new InvalidOperationException("Invalid reference type.");
-            }
-            return type.TypeParameters[0];
         }
 
         public void WriteMpAsm(IMpAsmWriter writer)

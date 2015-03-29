@@ -69,7 +69,16 @@ namespace CSharpToMpAsm.Compiler.Codes
         public void SetupMethodDataLocations(MethodDefinition method)
         {
             if (method.ReturnType != TypeDefinitions.Void && method.ReturnValueLocation == null)
-                method.ReturnValueLocation = _memManager.Alloc(method.ReturnType.Size);
+            {
+                if (method.ReturnType.Size == 1)
+                {
+                    method.ReturnValueLocation = ResultLocation.WorkRegister;
+                }
+                else
+                {
+                    method.ReturnValueLocation = _memManager.Alloc(method.ReturnType.Size);
+                }
+            }
 
             foreach (var parameter in method.Parameters)
             {
@@ -87,7 +96,13 @@ namespace CSharpToMpAsm.Compiler.Codes
 
         private bool IsWorkingRegisterUsagePosiible(MethodDefinition method, ParameterDestination parameter)
         {
-            if (parameter.Type.Size != 1) return false;
+            if (parameter.Type.IsReference && method.ReturnValueLocation == ResultLocation.WorkRegister) return false;
+            
+            var type = parameter.Type;
+            if (parameter.Type.IsReference)
+                type = CommonCodes.Dereference(parameter.Type);
+
+            if (type.Size != 1) return false;
             if (method.Parameters.Where(x => x.Location != null).Any(x => x.Location.IsWorkRegister)) return false;
             var visitor = new ParameterUsageVisitor(parameter);
             visitor.Visit(method.Body);
