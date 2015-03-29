@@ -38,7 +38,7 @@ namespace CSharpToMpAsm.Compiler.Codes
 
             protected override ICode Optimize(GetValue getValue)
             {
-                return new GetValue(getValue.Variable, _toType);
+                return new GetValue(getValue.Destination, _toType);
             }
 
             protected override ICode Optimize(CastCode castCode)

@@ -140,7 +140,7 @@ namespace CSharpToMpAsm.Compiler
                 if (code.ResultType.IsReference) return code;
                 var getValue = code as GetValue;
                 if (getValue == null) throw new InvalidOperationException("It is expected that code should be GetValue.");
-                return new GetReference(getValue.Variable);
+                return new GetReference(getValue.Destination);
             }
 
             throw new NotImplementedException();

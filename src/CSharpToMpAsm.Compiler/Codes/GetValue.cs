@@ -4,32 +4,32 @@ namespace CSharpToMpAsm.Compiler.Codes
 {
     public class GetValue : ICode
     {
-        public IValueDestination Variable { get; set; }
+        public IValueDestination Destination { get; set; }
         public TypeDefinition ResultType { get; private set; }
         public ResultLocation Location { get; private set; }
 
-        public GetValue(IValueDestination variable) : this(variable, variable.Type) { }
+        public GetValue(IValueDestination destination) : this(destination, destination.Type) { }
 
-        public GetValue(IValueDestination variable, TypeDefinition toType)
+        public GetValue(IValueDestination destination, TypeDefinition toType)
         {
-            Variable = variable;
+            Destination = destination;
             ResultType = toType.IsReference ? toType.TypeParameters[0] : toType;
         }
 
-        public GetValue(IValueDestination variable, TypeDefinition resultType, ResultLocation location) : this(variable, resultType)
+        public GetValue(IValueDestination destination, TypeDefinition resultType, ResultLocation location) : this(destination, resultType)
         {
             Location = location;
         }
 
         public void WriteMpAsm(IMpAsmWriter writer)
         {
-            writer.Comment(string.Format("; {0} ({1})", Variable.Location, Variable.Name));
-            writer.Copy(Variable.Location, Location, ResultType.Size);
+            writer.Comment(string.Format("; {0} ({1})", Destination.Location, Destination.Name));
+            writer.Copy(Destination.Location, Location, ResultType.Size);
         }
 
         protected bool Equals(GetValue other)
         {
-            return Equals(Variable, other.Variable);
+            return Equals(Destination, other.Destination);
         }
 
         public override bool Equals(object obj)
@@ -42,7 +42,7 @@ namespace CSharpToMpAsm.Compiler.Codes
 
         public override int GetHashCode()
         {
-            return (Variable != null ? Variable.GetHashCode() : 0);
+            return (Destination != null ? Destination.GetHashCode() : 0);
         }
 
         public bool Equals(ICode other)

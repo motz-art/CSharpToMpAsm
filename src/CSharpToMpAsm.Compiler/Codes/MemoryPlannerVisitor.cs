@@ -35,9 +35,9 @@ namespace CSharpToMpAsm.Compiler.Codes
 
         protected override ICode Optimize(GetValue getValue)
         {
-            var location = _memManager.Alloc(getValue.Variable);
-            getValue.Variable.Location = location;
-            return new GetValue(getValue.Variable, getValue.ResultType, _memManager.Alloc(getValue.ResultType.Size));
+            var location = _memManager.Alloc(getValue.Destination);
+            getValue.Destination.Location = location;
+            return new GetValue(getValue.Destination, getValue.ResultType, _memManager.Alloc(getValue.ResultType.Size));
         }
 
         protected override ICode Optimize(AddInts addInts)
@@ -142,7 +142,7 @@ namespace CSharpToMpAsm.Compiler.Codes
             var getValue = assign.Code as GetValue;
             if (getValue != null)
             {
-                code = new GetValue(getValue.Variable, getValue.ResultType, assign.Destination.Location);
+                code = new GetValue(getValue.Destination, getValue.ResultType, assign.Destination.Location);
             }
             else
             {
@@ -239,7 +239,7 @@ namespace CSharpToMpAsm.Compiler.Codes
 
             protected override ICode Optimize(GetValue getValue)
             {
-                if (getValue.Variable.Equals(_parameter) && !_isFirst)
+                if (getValue.Destination.Equals(_parameter) && !_isFirst)
                     IsWorkingRegisterUsagePosiible = false;
 
                 return base.Optimize(getValue);

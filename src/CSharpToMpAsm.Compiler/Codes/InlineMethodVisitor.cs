@@ -53,7 +53,7 @@ namespace CSharpToMpAsm.Compiler.Codes
                 {
                     if (x.Type.IsReference || CheckReadOnly(x, method.Body))
                     {
-                        destinations.Add(x.Name, getValue.Variable);
+                        destinations.Add(x.Name, getValue.Destination);
                         continue;
                     }
                 }
@@ -136,7 +136,7 @@ namespace CSharpToMpAsm.Compiler.Codes
             protected override ICode Optimize(GetValue getValue)
             {
                 IValueDestination variable;
-                if (_variables.TryGetValue(getValue.Variable.Name, out variable))
+                if (_variables.TryGetValue(getValue.Destination.Name, out variable))
                 {
                     return new GetValue(variable, getValue.ResultType);
                 }
