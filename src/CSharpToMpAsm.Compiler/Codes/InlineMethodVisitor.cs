@@ -46,20 +46,30 @@ namespace CSharpToMpAsm.Compiler.Codes
 
             for (var i = 0; i < method.Parameters.Length; i++)
             {
-                var x = method.Parameters[i];
+                var parameter = method.Parameters[i];
                 var argument = call.Args[i];
+                if (parameter.Type.IsReference)
+                {
+                    var reference = argument as GetReference;
+                    if (reference == null) 
+                        throw new InvalidOperationException("Parameter should be passed as reference.");
+
+                    destinations.Add(parameter.Name, reference.Value);
+
+                    continue;
+                }
                 var getValue = argument as GetValue;
                 if (getValue != null)
                 {
-                    if (x.Type.IsReference || CheckReadOnly(x, method.Body))
+                    if (CheckReadOnly(parameter, method.Body))
                     {
-                        destinations.Add(x.Name, getValue.Destination);
+                        destinations.Add(parameter.Name, getValue.Destination);
                         continue;
                     }
                 }
 
-                var variable = new Variable(x.Name, x.Type, x.Location);
-                destinations.Add(x.Name, variable);
+                var variable = new Variable(parameter.Name, parameter.Type, parameter.Location);
+                destinations.Add(parameter.Name, variable);
                 codes.Add(new Assign(variable, argument));
 
             }
