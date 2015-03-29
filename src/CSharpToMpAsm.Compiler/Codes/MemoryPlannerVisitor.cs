@@ -135,12 +135,18 @@ namespace CSharpToMpAsm.Compiler.Codes
             if (assignCode != null) return OptimizeAssign(assignCode);
 
             var postIncrement = code as PostIncrementCode;
-            if (postIncrement!= null) 
+            if (postIncrement != null)
+            {
+                postIncrement.Destination.Location = _memManager.Alloc(postIncrement.Destination);
                 return new PostIncrementCode(postIncrement.Destination, postIncrement.Destination.Location);
+            }
 
             var postDecrement = code as PostDecrementCode;
-            if (postDecrement!=null)
+            if (postDecrement != null)
+            {
+                postDecrement.Destination.Location = _memManager.Alloc(postDecrement.Destination);
                 return new PostDecrementCode(postDecrement.Destination, postDecrement.Destination.Location);
+            }
 
             var newCode = Visit(code);
 
