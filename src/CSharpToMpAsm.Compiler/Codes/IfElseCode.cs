@@ -82,20 +82,20 @@ namespace CSharpToMpAsm.Compiler.Codes
             throw new NotImplementedException();
         }
 
-        private void WriteWithConstantValue(ICode right, IntValue value, IMpAsmWriter writer)
+        private void WriteWithConstantValue(ICode expression, IntValue value, IMpAsmWriter writer)
         {
             if (value.Value == 0)
             {
-                if (right.ResultType == TypeDefinitions.Byte)
+                if (expression.ResultType == TypeDefinitions.Byte)
                 {
-                    right.WriteMpAsm(writer);
-                    if (right.Location.IsWorkRegister)
+                    expression.WriteMpAsm(writer);
+                    if (expression.Location.IsWorkRegister)
                     {
                         throw new NotImplementedException();
                     }
                     else
                     {
-                        writer.MoveFileToFile(right.Location);
+                        writer.MoveFileToFile(expression.Location);
                         writer.BitTestSkipSet(CommonCodes.Status, CommonCodes.StatusZ);
                         
                         if (FalseCode is NullCode)
